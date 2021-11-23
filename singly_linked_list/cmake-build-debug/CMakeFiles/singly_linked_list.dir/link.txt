@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/singly_linked_list.dir/src/singly_linked_list.c.o CMakeFiles/singly_linked_list.dir/src/compare_functions.c.o CMakeFiles/singly_linked_list.dir/src/delete_function.c.o CMakeFiles/singly_linked_list.dir/src/print_list.c.o -o singly_linked_list 
