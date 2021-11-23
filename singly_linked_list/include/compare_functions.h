@@ -37,20 +37,6 @@ int cmp_int_t (const void * a, const void * b);
 int cmp_flt_t (const void * a, const void * b);
 
 /**
- * @brief - compares unsigned floating point integer values
- * @param a - (const void *) a generic pointer value converted to an
- *            unsigned float
- * @param b - (const void *) a generic pointer value converter to an
- *            unsigned float
- * @return - performs a boolean operation between value a and b, checking if
- *           a is greater than b and subtracting that from another check to see if
- *           b is greater than a. If the values are equal, this function returns
- *           a 0 value, otherwise -1 is returned indicating a and b are not the
- *           same.
- */
-int cmp_uflt_t (const void * a, const void * b);
-
-/**
  * @brief - compares signed double values
  * @param a - (const void *) a generic pointer value converted to a double
  * @param b - (const void *) a generic pointer value converter to a double
@@ -61,20 +47,6 @@ int cmp_uflt_t (const void * a, const void * b);
  *           same.
  */
 int cmp_dbl_t (const void * a, const void * b);
-
-/**
- * @brief - compares unsigned double values
- * @param a - (const void *) a generic pointer value converted to an
- *            unsigned double
- * @param b - (const void *) a generic pointer value converter to an
- *            unsigned double
- * @return - performs a boolean operation between value a and b, checking if
- *           a is greater than b and subtracting that from another check to see if
- *           b is greater than a. If the values are equal, this function returns
- *           a 0 value, otherwise -1 is returned indicating a and b are not the
- *           same.
- */
-int cmp_udbl_t (const void * a, const void * b);
 
 /**
  * @brief - compares string or character array values

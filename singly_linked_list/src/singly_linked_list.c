@@ -233,28 +233,20 @@ void destroy_list (sll_t * sll)
 
 int main(void)
 {
-    sll_t * new = init(cmp_bool_t,
+    sll_t * new = init(cmp_int_t,
                        delete_node,
-                       print_list_bool);
+                       print_list_int);
     if (NULL == new)
     {
         fprintf(stderr, "could not create list container\n");
         return EXIT_FAILURE;
     }
 
-    bool is_true = true;
-    bool is_false = false;
+    int int_array[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     int ret_val = -1;
     for (int i = 0; i < 10; i++)
     {
-        if (0 == i % 2)
-        {
-            ret_val = append(new, (void *)&is_true);
-        }
-        else if (1 == i % 2)
-        {
-            ret_val = append(new, (void *)&is_false);
-        }
+        ret_val = append(new, (void *)&int_array[i]);
         if ((-1 == ret_val) || (1 == ret_val))
         {
             fprintf(stderr, "could not insert node %u\n", i);
@@ -269,32 +261,31 @@ int main(void)
         {
             break;
         }
-        printf("[ location: %p\tindex: %ld, data: %s ]\n",
-               (void *)current, current->index, 1 == *(bool *)current->data ? "true" : "false");
+        printf("[ location: %p\tindex: %ld, data: %d ]\n",
+               (void *)current, current->index, *(int *)current->data);
         current = current->next;
     }
 
-    bool * true_head = (bool *)new->head->data;
-    node_t * node_found = find_singular_node(new, (const void *)true_head);
+    int * list_head = (int *)new->head->data;
+    node_t * node_found = find_singular_node(new, (const void *)list_head);
     if (NULL == node_found)
     {
         perror("could not find requested node");
         return EXIT_FAILURE;
     }
 
-    printf("node found at position: %ld\tnode data: %s\n", node_found->index, 1 == *(bool *)node_found->data ?
-                                                            "true" : "false");
+    printf("node found at position: %ld\tnode data: %d\n", node_found->index, *(int *)node_found->data);
 
     new->print_func(new);
 
-    bool * current_head = (bool *) new->head->data;
+    int * current_head = (int *) new->head->data;
     remove_node(new, (void *) current_head);
 
     new->print_func(new);
 
-    printf("tail data: %s\n", 1 == *(bool *)new->tail->data ? "true" : "false");
+    printf("tail data: %d\n", *(int *)new->tail->data);
 
-    bool * current_tail = (bool *) new->tail->data;
+    int * current_tail = (int *) new->tail->data;
     remove_node(new, (void *) current_tail);
 
     new->print_func(new);
