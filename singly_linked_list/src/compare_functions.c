@@ -20,10 +20,26 @@ int cmp_flt_t (const void * a, const void * b)
     return (*fa > *fb) - (*fa < *fb);
 }
 
+int cmp_uflt_t (const void * a, const void * b)
+{
+    const unsigned float * fa = a;
+    const unsigned float * fb = b;
+
+    return (*fa > *fb) - (*fa < *fb);
+}
+
 int cmp_dbl_t (const void * a, const void * b)
 {
     const double * da = a;
     const double * db = b;
+
+    return (*da > *db) - (*da < *db);
+}
+
+int cmp_udbl_t (const void * a, const void * b)
+{
+    const unsigned double * da = a;
+    const unsigned double * db = b;
 
     return (*da > *db) - (*da < *db);
 }
