@@ -101,6 +101,7 @@ int append (sll_t * sll, void * node_data)
             fprintf(stderr, "%s: could not create new node\n", __func__);
             return 1;
         }
+
         new->index = sll->size;
         sll->tail->next = new;
         sll->tail = new;
@@ -109,7 +110,7 @@ int append (sll_t * sll, void * node_data)
     return 0;
 }
 
-void decrement_index (sll_t * sll, size_t start_pos)
+static void decrement_index (sll_t * sll, size_t start_pos)
 {
     if (NULL == sll)
     {
@@ -131,7 +132,7 @@ void decrement_index (sll_t * sll, size_t start_pos)
     }
 }
 
-void increment_index (sll_t * sll, size_t start_pos)
+static void increment_index (sll_t * sll, size_t start_pos)
 {
     if (NULL == sll)
     {
@@ -197,6 +198,103 @@ void insert_new_head (sll_t * sll, const void * data)
         sll->size++;
         increment_index(sll, new_head->index);
     }
+}
+
+void insert_at_index (sll_t * sll, void * data, size_t index)
+{
+    if (NULL == sll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (NULL == data)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: data parameter passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (index > sll->size - 1)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: index value passed cannot exceed list size: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (0 == index)
+    {
+        insert_new_head(sll, data);
+        return;
+    }
+
+    node_t * current    = sll->head;
+    node_t * prev       = NULL;
+    while (current)
+    {
+        if (index == current->next->index)
+        {
+            prev = current;
+            current = current->next;
+            node_t * new_node = create_node(data);
+            //NULL check on create
+            prev->next = new_node;
+            new_node->next = current;
+            sll->size++;
+            increment_index(sll, index + 1);
+            break;
+        }
+
+        current = current->next;
+    }
+
+    if (NULL == current)
+    {
+        fprintf(stderr, "%s: error occurred inserting new node\n", __func__);
+    }
+}
+
+node_t * find_by_index (sll_t * sll, size_t index)
+{
+    if (NULL == sll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
+
+    if (NULL == sll->head)
+    {
+        fprintf(stderr, "%s: current list container is empty\n",
+                        __func__);
+        return NULL;
+    }
+
+    if (index > sll->size - 1)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: index value passed cannot exceed list size: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
+
+    node_t * current = sll->head;
+    while (current)
+    {
+        if (index == current->index)
+        {
+            break;
+        }
+
+        current = current->next;
+    }
+
+    return current;
 }
 
 node_t * find_singular_node (sll_t * sll, const void * data)
@@ -287,7 +385,6 @@ void remove_node (sll_t * sll, const void * data)
         {
             temp = current->next;
             size_t index = temp->index;
-            printf("index in remove middle: %ld\n", index);
             current->next = current->next->next;
             sll->delete_func(temp);
             sll->size--;
@@ -328,53 +425,92 @@ void destroy_list (sll_t * sll)
     CLEAN(sll);
 }
 
-int main(void)
+int main (void)
 {
-    sll_t * new = init(cmp_int_t,
+    sll_t * new = init(cmp_uint32_t,
                        delete_node,
-                       print_list_int);
+                       print_list_uint32);
     if (NULL == new)
     {
-        fprintf(stderr, "could not create list container\n");
+        fprintf(stderr, "could not init new list, exiting\n");
         return EXIT_FAILURE;
     }
 
-    int int_array[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    int ret_val = -1;
-    for (int i = 0; i < 10; i++)
+    uint32_t node_1 = 1;
+    insert_at_index(new, (void *)&node_1, 0);
+    printf("list size after 1: %ld\n", new->size);
+    new->print_func(new);
+
+    uint32_t node_2 = 2;
+    int ret_val = append(new, (void *)&node_2);
+    if ((-1 == ret_val) || (1 == ret_val))
     {
-        ret_val = append(new, (void *)&int_array[i]);
-        if ((-1 == ret_val) || (1 == ret_val))
-        {
-            fprintf(stderr, "could not insert node %u\n", i);
-            return EXIT_FAILURE;
-        }
+        destroy_list(new);
+        return EXIT_FAILURE;
     }
-
+    printf("list size after 2: %ld\n", new->size);
     new->print_func(new);
 
-    int * current_head = (int *) new->head->data;
-    remove_node(new, (void *) current_head);
-
+    uint32_t new_2 = 1337;
+    insert_at_index(new, (void *)&new_2, 1);
+    printf("list size after 3: %ld\n", new->size);
     new->print_func(new);
 
-    int * current_tail = (int *) new->tail->data;
-    remove_node(new, (void *) current_tail);
-
+    uint32_t hacker = 4444;
+    insert_at_index(new, (void *)&hacker, 2);
+    printf("list size after 4: %ld\n", new->size);
     new->print_func(new);
 
-    int new_head = 1337;
-
-    insert_new_head(new, (void *)&new_head);
-
+    uint32_t eleet = 31337;
+    ret_val = append(new, (void *)&eleet);
+    if ((-1 == ret_val) || (1 == ret_val))
+    {
+        destroy_list(new);
+        return EXIT_FAILURE;
+    }
+    printf("list size after 5: %ld\n", new->size);
     new->print_func(new);
 
-    int remove_me = 7;
-    remove_node(new, (void *)&remove_me);
+    remove_node(new, (void *)&hacker);
+    printf("list size after remove 1: %ld\n", new->size);
+    new->print_func(new);
 
+    remove_node(new, (void *)&new_2);
+    printf("list size after remove 1: %ld\n", new->size);
+    new->print_func(new);
+
+    remove_node(new, (void *)&node_1);
+    printf("list size after remove 1: %ld\n", new->size);
+    new->print_func(new);
+
+    remove_node(new, (void *)&eleet);
+    printf("list size after remove 1: %ld\n", new->size);
+    new->print_func(new);
+
+    remove_node(new, (void *)&node_2);
+    printf("list size after remove 1: %ld\n", new->size);
+    new->print_func(new);
+
+    insert_new_head(new, (void *)&eleet);
+    printf("list size after insert head: %ld\n", new->size);
+    new->print_func(new);
+
+    insert_new_head(new, (void *)&new_2);
+    printf("list size after insert head: %ld\n", new->size);
+    new->print_func(new);
+
+    ret_val = append(new, (void *)&hacker);
+    if ((-1 == ret_val) || (1 == ret_val))
+    {
+        destroy_list(new);
+        return EXIT_FAILURE;
+    }
+    printf("list size after append: %ld\n", new->size);
     new->print_func(new);
 
     destroy_list(new);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
+
+/*** end singly_linked_list.c ***/
