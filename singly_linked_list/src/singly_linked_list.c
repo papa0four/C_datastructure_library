@@ -109,6 +109,96 @@ int append (sll_t * sll, void * node_data)
     return 0;
 }
 
+void decrement_index (sll_t * sll, size_t start_pos)
+{
+    if (NULL == sll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    node_t * current = sll->head;
+    while (current)
+    {
+        if (current->index >= start_pos)
+        {
+            current->index--;
+        }
+
+        current = current->next;
+    }
+}
+
+void increment_index (sll_t * sll, size_t start_pos)
+{
+    if (NULL == sll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                __func__, strerror(errno));
+        return;
+    }
+
+    node_t * current = sll->head->next;
+    while (current)
+    {
+        if (current->index <= start_pos)
+        {
+            current->index++;
+        }
+        else
+        {
+            current->index++;
+        }
+
+        current = current->next;
+    }
+}
+
+void insert_new_head (sll_t * sll, const void * data)
+{
+    if (NULL == sll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (NULL == data)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: data pointer passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (NULL == sll->head)
+    {
+        int ret_val = append(sll, (void *)data);
+        if ((-1 == ret_val) || (1 == ret_val))
+        {
+            return;
+        }
+    }
+    else
+    {
+        node_t * old_head = sll->head;
+        node_t * new_head = create_node((void *)data);
+        if (NULL == new_head)
+        {
+            fprintf(stderr, "%s: could not create new node\n", __func__);
+            return;
+        }
+        sll->head = new_head;
+        new_head->next = old_head;
+        sll->size++;
+        increment_index(sll, new_head->index);
+    }
+}
+
 node_t * find_singular_node (sll_t * sll, const void * data)
 {
     if (NULL == sll)
@@ -163,6 +253,8 @@ void remove_node (sll_t * sll, const void * data)
         node_t * old_head = sll->head;
         sll->head = old_head->next;
         sll->delete_func(old_head);
+        sll->size--;
+        decrement_index(sll, 0);
         return;
     }
 
@@ -179,6 +271,7 @@ void remove_node (sll_t * sll, const void * data)
                 sll->delete_func(temp);
                 current->next = NULL;
                 sll->tail = current;
+                sll->size--;
                 return;
             }
 
@@ -193,8 +286,12 @@ void remove_node (sll_t * sll, const void * data)
         if (0 == sll->compare_func(current->next->data, data))
         {
             temp = current->next;
+            size_t index = temp->index;
+            printf("index in remove middle: %ld\n", index);
             current->next = current->next->next;
             sll->delete_func(temp);
+            sll->size--;
+            decrement_index(sll, index);
             break;
         }
 
@@ -254,28 +351,6 @@ int main(void)
         }
     }
 
-    node_t * current = new->head;
-    while (current)
-    {
-        if (NULL == current)
-        {
-            break;
-        }
-        printf("[ location: %p\tindex: %ld, data: %d ]\n",
-               (void *)current, current->index, *(int *)current->data);
-        current = current->next;
-    }
-
-    int * list_head = (int *)new->head->data;
-    node_t * node_found = find_singular_node(new, (const void *)list_head);
-    if (NULL == node_found)
-    {
-        perror("could not find requested node");
-        return EXIT_FAILURE;
-    }
-
-    printf("node found at position: %ld\tnode data: %d\n", node_found->index, *(int *)node_found->data);
-
     new->print_func(new);
 
     int * current_head = (int *) new->head->data;
@@ -283,16 +358,19 @@ int main(void)
 
     new->print_func(new);
 
-    printf("tail data: %d\n", *(int *)new->tail->data);
-
     int * current_tail = (int *) new->tail->data;
     remove_node(new, (void *) current_tail);
 
     new->print_func(new);
 
-    bool middle = true;
+    int new_head = 1337;
 
-    remove_node(new, (void *)&middle);
+    insert_new_head(new, (void *)&new_head);
+
+    new->print_func(new);
+
+    int remove_me = 7;
+    remove_node(new, (void *)&remove_me);
 
     new->print_func(new);
 
