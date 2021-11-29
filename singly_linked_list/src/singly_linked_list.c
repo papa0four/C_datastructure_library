@@ -36,7 +36,14 @@ sll_t * init(cmp_f cmp_func_t,
     return sll;
 }
 
-node_t * create_node (void * data)
+/**
+ * @brief - allocates a node_t structure pointer to the heap, creating the new node to
+ *          insert into the singly linked list structure
+ * @param data - (void *) a generic pointer to the data to be stored within the node
+ * @return - a heap allocated node structure to insert into the singly linked list or
+ *           returns NULL on error setting errno for specific error
+ */
+static node_t * create_node (void * data)
 {
     /* verify valid data has been passed or set errno and return */
     if (NULL == data)
@@ -44,6 +51,7 @@ node_t * create_node (void * data)
         errno = EINVAL;
         fprintf(stderr, "%s: data passed is NULL: %s\n",
                 __func__, strerror(errno));
+        return NULL;
     }
 
     node_t * node = calloc(1, sizeof(node_t));

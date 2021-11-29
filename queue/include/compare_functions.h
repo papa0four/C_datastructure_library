@@ -1,0 +1,8 @@
+//
+// Created by jsabs on 11/29/21.
+//
+
+#ifndef QUEUE_COMPARE_FUNCTIONS_H
+#define QUEUE_COMPARE_FUNCTIONS_H
+
+#endif //QUEUE_COMPARE_FUNCTIONS_H

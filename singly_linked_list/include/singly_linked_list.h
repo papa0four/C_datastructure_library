@@ -50,14 +50,6 @@ typedef struct sl_list
               print_f print_func_t,
               print_n pnode_func_t);
 
- /**
-  * @brief - allocates a node_t structure pointer to the heap, creating the new node to
-  *          insert into the singly linked list structure
-  * @param data - (void *) a generic pointer to the data to be stored within the node
-  * @return - a heap allocated node structure to insert into the singly linked list or
-  *           returns NULL on error setting errno for specific error
-  */
- node_t * create_node(void * data);
 
  /**
   * @brief - appends a newly allocated node to an existing linked list. If there are currently no
