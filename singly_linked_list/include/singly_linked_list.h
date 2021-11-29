@@ -71,6 +71,34 @@ typedef struct sl_list
 int append(sll_t * sll, void * node_data);
 
 /**
+ * @brief - appends a newly allocated node to an existing linked list. If there are currently no
+ *          nodes within the list, append() will add the new node to the list, setting the list
+ *          HEAD and TAIL and updating the index member. If the list is populated, append() will
+ *          add the node to the end of the list and update the index appropriately.
+ * @param sll
+ * @param node_data
+ * @return
+ */
+void insert_new_head (sll_t * sll, const void * data);
+
+/**
+ *
+ * @param sll
+ * @param data
+ * @param index -
+ * @return -
+ */
+void insert_at_index (sll_t * sll, void * data, size_t index)
+
+/**
+ *
+ * @param sll
+ * @param index
+ * @return
+ */
+node_t * find_by_index (sll_t * sll, size_t index);
+
+/**
  * @brief -
  * @param sll -
  * @param data -
@@ -81,10 +109,10 @@ node_t * find_singular_node (sll_t * sll, const void * data);
 
 /**
  *
- * @param sll -
- *
+ * @param sll
+ * @return
  */
-void print_list (sll_t * sll, char * specifier);
+size_t get_list_size (sll_t * sll);
 
 /**
  * @brief -
@@ -95,9 +123,8 @@ void print_list (sll_t * sll, char * specifier);
 void remove_node (sll_t * sll, const void * data);
 
 /**
- *
- *
- *
+ * @brief -
+ * @param sll
  */
  void destroy_list (sll_t * sll);
 

@@ -341,6 +341,18 @@ node_t * find_singular_node (sll_t * sll, const void * data)
     return node_to_find;
 }
 
+size_t get_list_size (sll_t * sll)
+{
+    if (NULL == sll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return 0;
+    }
+    return sll->size;
+}
+
 void remove_node (sll_t * sll, const void * data)
 {
     if ((NULL == sll) || (NULL== data))
@@ -428,113 +440,6 @@ void destroy_list (sll_t * sll)
     sll->delete_func(current);
     sll->size = 0;
     CLEAN(sll);
-}
-
-int main (void)
-{
-    sll_t * new = init(cmp_uint32_t,
-                       delete_node,
-                       print_list_uint32,
-                       print_uint32);
-    if (NULL == new)
-    {
-        fprintf(stderr, "could not init new list, exiting\n");
-        return EXIT_FAILURE;
-    }
-
-    uint32_t node_1 = 1;
-    insert_at_index(new, (void *)&node_1, 0);
-    printf("list size after 1: %ld\n", new->size);
-    new->print_func(new);
-
-    uint32_t node_2 = 2;
-    int ret_val = append(new, (void *)&node_2);
-    if ((-1 == ret_val) || (1 == ret_val))
-    {
-        destroy_list(new);
-        return EXIT_FAILURE;
-    }
-    printf("list size after 2: %ld\n", new->size);
-    new->print_func(new);
-
-    uint32_t new_2 = 1337;
-    insert_at_index(new, (void *)&new_2, 1);
-    printf("list size after 3: %ld\n", new->size);
-    new->print_func(new);
-
-    uint32_t hacker = 4444;
-    insert_at_index(new, (void *)&hacker, 2);
-    printf("list size after 4: %ld\n", new->size);
-    new->print_func(new);
-
-    uint32_t eleet = 31337;
-    ret_val = append(new, (void *)&eleet);
-    if ((-1 == ret_val) || (1 == ret_val))
-    {
-        destroy_list(new);
-        return EXIT_FAILURE;
-    }
-    printf("list size after 5: %ld\n", new->size);
-    new->print_func(new);
-
-    node_t * current = new->head;
-    printf("print node test:\n\n");
-    while (current)
-    {
-        new->pnode_func((void *)current);
-        current = current->next;
-    }
-
-    printf("\n\n");
-
-    int (*mem_cmp)(const void *, const void *);
-    mem_cmp = &cmp_address_t;
-
-    node_t * head = new->head;
-    node_t * compare = new->head;
-    int ret_cmp = mem_cmp(head, compare);
-    printf("%s\n", 0 == ret_cmp ? "true" : "false");
-
-    remove_node(new, (void *)&hacker);
-    printf("list size after remove 1: %ld\n", new->size);
-    new->print_func(new);
-
-    remove_node(new, (void *)&new_2);
-    printf("list size after remove 1: %ld\n", new->size);
-    new->print_func(new);
-
-    remove_node(new, (void *)&node_1);
-    printf("list size after remove 1: %ld\n", new->size);
-    new->print_func(new);
-
-    remove_node(new, (void *)&eleet);
-    printf("list size after remove 1: %ld\n", new->size);
-    new->print_func(new);
-
-    remove_node(new, (void *)&node_2);
-    printf("list size after remove 1: %ld\n", new->size);
-    new->print_func(new);
-
-    insert_new_head(new, (void *)&eleet);
-    printf("list size after insert head: %ld\n", new->size);
-    new->print_func(new);
-
-    insert_new_head(new, (void *)&new_2);
-    printf("list size after insert head: %ld\n", new->size);
-    new->print_func(new);
-
-    ret_val = append(new, (void *)&hacker);
-    if ((-1 == ret_val) || (1 == ret_val))
-    {
-        destroy_list(new);
-        return EXIT_FAILURE;
-    }
-    printf("list size after append: %ld\n", new->size);
-    new->print_func(new);
-
-    destroy_list(new);
-
-    return EXIT_SUCCESS;
 }
 
 /*** end singly_linked_list.c ***/
