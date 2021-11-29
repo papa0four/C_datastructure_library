@@ -3,10 +3,12 @@
 //
 
 #include "../include/print_list.h"
+#include "../include/print_node.h"
 
 sll_t * init(cmp_f cmp_func_t,
              del_f del_func_t,
-             print_f print_func_t)
+             print_f print_func_t,
+             print_n pnode_func_t)
 {
     /* allocate new list structure, sets errno on calloc failure */
     sll_t * sll = calloc(1, sizeof(sll_t));
@@ -26,6 +28,7 @@ sll_t * init(cmp_f cmp_func_t,
     sll->compare_func = cmp_func_t;
     sll->delete_func  = del_func_t;
     sll->print_func   = print_func_t;
+    sll->pnode_func   = pnode_func_t;
 
     /* return a pointer to the empty structure */
     return sll;
@@ -429,7 +432,8 @@ int main (void)
 {
     sll_t * new = init(cmp_uint32_t,
                        delete_node,
-                       print_list_uint32);
+                       print_list_uint32,
+                       print_uint32);
     if (NULL == new)
     {
         fprintf(stderr, "could not init new list, exiting\n");
@@ -470,6 +474,16 @@ int main (void)
     }
     printf("list size after 5: %ld\n", new->size);
     new->print_func(new);
+
+    node_t * current = new->head;
+    printf("print node test:\n\n");
+    while (current)
+    {
+        new->pnode_func((void *)current);
+        current = current->next;
+    }
+
+    printf("\n\n");
 
     remove_node(new, (void *)&hacker);
     printf("list size after remove 1: %ld\n", new->size);

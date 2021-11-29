@@ -22,6 +22,7 @@ typedef struct sl_list sll_t;
 typedef int (*cmp_f) (const void * a, const void * b);
 typedef void (*del_f) (void * node_t);
 typedef void (*print_f) (sll_t * sll);
+typedef void (*print_n) (void * data);
 
 typedef struct sll_node
 {
@@ -38,6 +39,7 @@ typedef struct sl_list
     cmp_f    compare_func;
     del_f    delete_func;
     print_f  print_func;
+    print_n  pnode_func;
 } sll_t;
 
 /**
@@ -48,7 +50,8 @@ typedef struct sl_list
  */
  sll_t * init(cmp_f cmp_func_t,
               del_f del_func_t,
-              print_f print_func_t);
+              print_f print_func_t,
+              print_n pnode_func_t);
 
  /**
   * @brief - allocates a node_t structure pointer to the heap, creating the new node to
