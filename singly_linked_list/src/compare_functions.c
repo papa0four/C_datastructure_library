@@ -2,6 +2,7 @@
 // Created by jsabs on 11/19/21.
 //
 
+#include "../include/singly_linked_list.h"
 #include "../include/compare_functions.h"
 
 int cmp_int_t (const void * a, const void * b)
@@ -89,7 +90,7 @@ int cmp_int8_t (const void * a, const void * b)
     const int8_t * int8_1 = a;
     const int8_t * int8_2 = b;
 
-    return (*int8_1 > *int8_2) - (*int8_2 < *int8_2);
+    return (*int8_1 > *int8_2) - (*int8_1 < *int8_2);
 }
 
 int cmp_uint16_t (const void * a, const void * b)
@@ -144,80 +145,17 @@ int cmp_bool_t (const void * a, const void * b)
     return -1;
 }
 
-//static int determine_cmp_func (const void * a, const void * b, int flag_t)
-//{
-//    int (*cmp_func_ptr) (const void *, const void *);
-//    int cmp_return = -1;
-//
-//    switch (flag_t)
-//    {
-//        case INT_F:
-//            cmp_func_ptr = &cmp_int_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case FLT_F:
-//            cmp_func_ptr = &cmp_flt_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case DBL_F:
-//            cmp_func_ptr = &cmp_dbl_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case STR_F:
-//            cmp_func_ptr = &cmp_str_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case UI8_F:
-//            cmp_func_ptr = &cmp_uint8_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case INT8_F:
-//            cmp_func_ptr = &cmp_int8_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case UI16_F:
-//            cmp_func_ptr = &cmp_uint16_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case INT16_F:
-//            cmp_func_ptr = &cmp_int16_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case UI32_F:
-//            cmp_func_ptr = &cmp_uint32_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case UI64_F:
-//            cmp_func_ptr = &cmp_uint64_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case INT64_F:
-//            cmp_func_ptr = &cmp_int64_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        case BOOL_F:
-//            cmp_func_ptr = &cmp_bool_t;
-//            cmp_return = cmp_func_ptr(a, b);
-//            break;
-//
-//        default:
-//            fprintf(stderr, "%s: error occurred determining compare function\n",
-//                            __func__);
-//            return -1;
-//    }
-//
-//    return cmp_return;
-//}
+int cmp_address_t (const void * a, const void * b)
+{
+    const node_t * node_a = a;
+    const node_t * node_b = b;
+
+    if (node_a->data == node_b->data)
+    {
+        return 0;
+    }
+
+    return -1;
+}
 
 /*** end compare_functions.c ***/

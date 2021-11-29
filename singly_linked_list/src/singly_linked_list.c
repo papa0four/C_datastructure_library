@@ -4,6 +4,8 @@
 
 #include "../include/print_list.h"
 #include "../include/print_node.h"
+#include "../include/compare_functions.h"
+#include "../include/delete_function.h"
 
 sll_t * init(cmp_f cmp_func_t,
              del_f del_func_t,
@@ -484,6 +486,14 @@ int main (void)
     }
 
     printf("\n\n");
+
+    int (*mem_cmp)(const void *, const void *);
+    mem_cmp = &cmp_address_t;
+
+    node_t * head = new->head;
+    node_t * compare = new->head;
+    int ret_cmp = mem_cmp(head, compare);
+    printf("%s\n", 0 == ret_cmp ? "true" : "false");
 
     remove_node(new, (void *)&hacker);
     printf("list size after remove 1: %ld\n", new->size);

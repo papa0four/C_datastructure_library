@@ -174,4 +174,16 @@ int cmp_int64_t (const void * a, const void * b);
  */
 int cmp_bool_t (const void * a, const void * b);
 
+/**
+ * @brief - compares memory address values utilized if the node data is a custom
+ *          structure created by the user
+ * @param a - (const void *) a generic pointer value converted to a
+ *            node type to compare memory addresses of a node's data
+ * @param b - (const void *) a generic pointer value converted to a
+ *            node type to compare memory addresses of a node's data
+ * @return - performs a comparison operation between value a and b, checking if
+ *           the addresses of what is passed are the same
+ */
+int cmp_address_t (const void * a, const void * b);
+
 #endif //SINGLY_LINKED_LIST_COMPARE_FUNCTIONS_H

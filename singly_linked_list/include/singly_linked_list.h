@@ -11,9 +11,6 @@
 #include <inttypes.h> // tentative
 #include <errno.h>
 
-#include "compare_functions.h"
-#include "delete_function.h"
-
 /* FREE/NULL Macro for ease of use */
 #define CLEAN(a) if (a) free(a);(a)=NULL;
 

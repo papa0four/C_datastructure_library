@@ -5,7 +5,13 @@
 #ifndef SINGLY_LINKED_LIST_PRINT_LIST_H
 #define SINGLY_LINKED_LIST_PRINT_LIST_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <errno.h>
 #include "singly_linked_list.h"
+
 
 void print_list_int (sll_t * sll);
 
