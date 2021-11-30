@@ -12,6 +12,15 @@ queue_t * init (cmp_f cmp_func_t,
                del_f del_func_t,
                print_f print_func_t)
 {
+    if ((NULL == cmp_func_t) ||
+        (NULL == del_func_t) ||
+        (NULL == print_func_t))
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: one or more function pointers passed are NULL: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
     /* allocate new list structure, sets errno on calloc failure */
     queue_t * queue = calloc(1, sizeof(queue_t));
     if (NULL == queue)
@@ -35,6 +44,21 @@ queue_t * init (cmp_f cmp_func_t,
     return queue;
 }
 
+/**
+ * @brief - this is a helper function, meant to allocate memory to the heap to store the appropriate
+ *          queue node container date before placing the node within the queue. If the data parameter
+ *          passed is NULL, create_node will set errno to EINVAL, print an error message to STDERR,
+ *          and return a NULL node pointer.
+ * @param data - (void *) a generic pointer contained the desired data to be stored within the newly created node.
+ * @param pnode_func_t - (print_n) a function pointer passed by the user within enqueue and checked for validity.
+ *                       This function pointer will point to the appropriate formatter print function, determined
+ *                       by the user in order to print the specific data within the node.
+ * @return - upon success, create_node will return a newly allocated queue node container, created on the heap
+ *           and containing the appropriate data before being inserted into the queue storage container. If create_node
+ *           receives an invalid parameter, errno will be set to EINVAL and the function will return a NULL pointer.
+ *           If the call to calloc fails to allocate memory upon the heap, errno will be set to ENOMEM and
+ *           create_node will return a NULL pointer.
+ */
 static qnode_t * create_node (const void * data, print_n pnode_func_t)
 {
     if (NULL == data)
@@ -64,6 +88,14 @@ static qnode_t * create_node (const void * data, print_n pnode_func_t)
 
 int enqueue (queue_t * queue, void * data, print_n pnode_func_t)
 {
+    if (NULL == pnode_func_t)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: formatted node print function pointer passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return -1;
+    }
+
     if (NULL == queue)
     {
         errno = EINVAL;
@@ -112,7 +144,14 @@ int enqueue (queue_t * queue, void * data, print_n pnode_func_t)
     return 0;
 }
 
-static void decrement_pos (queue_t * queue, size_t start_pos)
+/**
+ * @brief - this function is an internal helper function meant to appropriate decrease the position member
+ *          stored within the queue node container as nodes are removed from the queue container.
+ * @param queue - (queue_t *) a pointer to the current queue storage container
+ * @return - None. If the queue parameter passed is NULL, errno will be set to EINVAL and an error message
+ *           will be sent to STDERR and the decrement functionality will not be performed.
+ */
+static void decrement_pos (queue_t * queue)
 {
     if (NULL == queue)
     {
@@ -122,21 +161,10 @@ static void decrement_pos (queue_t * queue, size_t start_pos)
         return;
     }
 
-    if (start_pos > queue->size - 1)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: position parameter passed cannot exceed container size - 1: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
-
     qnode_t * current = queue->head;
     while (current)
     {
-        if (current->pos >= start_pos)
-        {
-            current->pos--;
-        }
+        current->pos--;
         current = current->next;
     }
 }
@@ -162,7 +190,7 @@ qnode_t * dequeue (queue_t * queue)
     {
         current = queue->head;
         queue->head = queue->head->next;
-        decrement_pos(queue, 0);
+        decrement_pos(queue);
         queue->size--;
     }
 
@@ -253,72 +281,6 @@ void destroy_queue (queue_t * queue)
     queue->delete_func(current);
     queue->size = 0;
     CLEAN(queue);
-}
-
-int main (void)
-{
-    queue_t * new_q = init(cmp_int_t,
-                           delete_node,
-                           print_queue_int);
-    if (NULL == new_q)
-    {
-        return EXIT_FAILURE;
-    }
-
-    new_q->print_func(new_q);
-
-    int data = 1337;
-    int ret_val = enqueue(new_q, (void *)&data, print_int);
-    if ((-1 == ret_val) || (1 == ret_val))
-    {
-        CLEAN(new_q);
-        return EXIT_FAILURE;
-    }
-
-    int new_data = 31337;
-    ret_val = enqueue(new_q, (void *)&new_data, print_int);
-    if ((-1 == ret_val) || (1 == ret_val))
-    {
-        new_q->delete_func(new_q);
-        CLEAN(new_q);
-        return EXIT_FAILURE;
-    }
-
-    new_q->print_func(new_q);
-
-    qnode_t * old_head = dequeue(new_q);
-    if (NULL == old_head)
-    {
-        new_q->delete_func(new_q->tail);
-        new_q->delete_func(new_q->head);
-        CLEAN(new_q);
-        return EXIT_FAILURE;
-    }
-
-    printf("popped data: %d\n", *(int *)old_head->data);
-    CLEAN(old_head);
-
-    new_q->print_func(new_q);
-
-    printf("%s\n", true == is_empty(new_q) ? "true" : "false");
-
-    peek((void *)new_q);
-
-    ret_val = enqueue(new_q, (void *)&data, print_int);
-    if ((-1 == ret_val) || (1 == ret_val))
-    {
-        CLEAN(new_q);
-        return EXIT_FAILURE;
-    }
-
-    new_q->print_func(new_q);
-
-    size_t current_size = get_queue_size(new_q);
-    printf("size: %ld\n", current_size);
-
-    destroy_queue(new_q);
-
-    return EXIT_SUCCESS;
 }
 
 /*** end of queue.c ***/
