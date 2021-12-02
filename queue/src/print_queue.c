@@ -4,8 +4,6 @@
 
 #include "../include/print_queue.h"
 
-#include "../include/print_queue.h"
-
 void print_queue_int (queue_t * queue)
 {
     if (NULL == queue)

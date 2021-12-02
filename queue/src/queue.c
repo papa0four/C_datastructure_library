@@ -3,10 +3,7 @@
 //
 
 #include "../include/queue.h"
-#include "../include/compare_functions.h"
-#include "../include/print_queue.h"
 #include "../include/delete_function.h"
-#include "../include/print_node.h"
 
 queue_t * init (cmp_f cmp_func_t,
                del_f del_func_t,

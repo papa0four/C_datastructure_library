@@ -28,21 +28,21 @@ typedef void (*print_n) (void * data);
 // queue node struct definition
 typedef struct q_node
 {
-    size_t         pos;
-    void         * data;
-    qnode_t      * next;
-    print_n        pnode_func;
+    size_t         pos;     // queue position starting at 0
+    void         * data;    // a pointer to the node's data
+    qnode_t      * next;    // a pointer to the next node in the queue
+    print_n        pnode_func;  // the formatted print function pointer
 } qnode_t;
 
 // queue container struct definition
 typedef struct queue
 {
-    qnode_t     * head;
-    qnode_t     * tail;
-    size_t        size;
-    cmp_f         compare_func;
-    del_f         delete_func;
-    print_f       print_func;
+    qnode_t     * head;     // the 0th position within the queue
+    qnode_t     * tail;     // the nth position signifying end of the queue
+    size_t        size;     // the total count of items within the queue
+    cmp_f         compare_func; // the function pointer to compare node values
+    del_f         delete_func;  // the function pointer to appropriate delete nodes
+    print_f       print_func;   // the function pointer to perform a queue formatted print
 } queue_t;
 
 // free/NULL macro for redundancy removal
