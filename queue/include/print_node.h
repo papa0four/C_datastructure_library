@@ -22,7 +22,7 @@
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -38,7 +38,7 @@ void print_int (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -54,7 +54,7 @@ void print_float (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -70,7 +70,7 @@ void print_double (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -86,7 +86,7 @@ void print_string (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -102,7 +102,7 @@ void print_uint8 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -118,7 +118,7 @@ void print_int8 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -134,7 +134,7 @@ void print_uint16 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -150,7 +150,7 @@ void print_int16 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -166,7 +166,7 @@ void print_uint32 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -182,7 +182,7 @@ void print_uint64 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
@@ -198,7 +198,7 @@ void print_int64 (void * data);
  *          of the data and the data itself. If the user wishes to view the node's
  *          queue position, they will have to define their own print statement to
  *          do so.
- * @param sll - (queue_t *) a pointer to the current queue container
+ * @param data - (queue_t *) a pointer to the current queue container
  * @return - None. If the queue container parameter passed is NULL, an error message
  *           will be sent to STDERR and errno will be set to EINVAL.
  */
