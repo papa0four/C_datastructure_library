@@ -1,3 +1,0 @@
-/home/jsabs/datastructures/singly_linked_list/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/jsabs/datastructures/singly_linked_list/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/jsabs/datastructures/singly_linked_list/cmake-build-debug/CMakeFiles/singly_linked_list.dir
