@@ -4,7 +4,7 @@
 
 #include "../include/print_stack.h"
 
-void print_list_int (stack_t * stack)
+void print_stack_int (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -32,7 +32,7 @@ void print_list_int (stack_t * stack)
     }
 }
 
-void print_list_float (stack_t * stack)
+void print_stack_float (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -60,7 +60,7 @@ void print_list_float (stack_t * stack)
     }
 }
 
-void print_list_double (stack_t * stack)
+void print_stack_double (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -88,7 +88,7 @@ void print_list_double (stack_t * stack)
     }
 }
 
-void print_list_str (stack_t * stack)
+void print_stack_str (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -116,7 +116,7 @@ void print_list_str (stack_t * stack)
     }
 }
 
-void print_list_uint8 (stack_t * stack)
+void print_stack_uint8 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -144,7 +144,7 @@ void print_list_uint8 (stack_t * stack)
     }
 }
 
-void print_list_int8 (stack_t * stack)
+void print_stack_int8 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -172,7 +172,7 @@ void print_list_int8 (stack_t * stack)
     }
 }
 
-void print_list_uint16 (stack_t * stack)
+void print_stack_uint16 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -200,7 +200,7 @@ void print_list_uint16 (stack_t * stack)
     }
 }
 
-void print_list_int16 (stack_t * stack)
+void print_stack_int16 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -228,7 +228,7 @@ void print_list_int16 (stack_t * stack)
     }
 }
 
-void print_list_uint32 (stack_t * stack)
+void print_stack_uint32 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -256,7 +256,7 @@ void print_list_uint32 (stack_t * stack)
     }
 }
 
-void print_list_uint64 (stack_t * stack)
+void print_stack_uint64 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -284,7 +284,7 @@ void print_list_uint64 (stack_t * stack)
     }
 }
 
-void print_list_int64 (stack_t * stack)
+void print_stack_int64 (stack_t * stack)
 {
     if (NULL == stack)
     {
@@ -312,7 +312,7 @@ void print_list_int64 (stack_t * stack)
     }
 }
 
-void print_list_bool (stack_t * stack)
+void print_stack_bool (stack_t * stack)
 {
     if (NULL == stack)
     {
