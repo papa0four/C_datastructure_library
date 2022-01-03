@@ -1,19 +1,21 @@
 /**
  * @file threadpool.c
  * @author James M. Horne (jamesmhorne90@gmail.com)
- * @brief 
+ * @brief A Threadpool data structure. Starts a determined amount of pthreads
+ *          that continously wait for a 'job'. A job consists of a function
+ *          pointer with a signature defined in threadpool.h. The user is
+ *          responsible for how a 'job' behaves; if there is no functionality
+ *          within that function to stop execution when the b_run flag is set
+ *          to false, then the threadpool will not shutdown properly until the
+ *          function is complete. The max threads that can be created is at
+ *          the cross of max size_t and what the host machine can handle.
  * @version 0.1
  * @date 2021-12-31
- * 
- * @copyright Copyright (c) 2021
- * 
  */
 
 #include <pthread.h>
 #include <stdlib.h>
 #include "../include/threadpool.h"
-
-#include <stdio.h>
 
 /*** structure definitions ***/
 
@@ -60,6 +62,14 @@ get_job (threadpool_t * p_threadpool);
 
 /*** public functions ***/
 
+/**
+ * @brief Creates a new threadpool context. initializes the determined amount of
+ *        threads and associated signals.
+ * 
+ * @param thread_count amount of threads that listen for jobs in the threadpool
+ * @return threadpool_t*; a new threadpool context.
+ * @return NULL; returns NULL on an error
+ */
 threadpool_t *
 threadpool_create (size_t thread_count)
 {
@@ -99,6 +109,8 @@ threadpool_create (size_t thread_count)
 
     }
 
+    return p_threadpool;
+
     EXIT_ERR:
     destroy_signals(&p_signals);
     free(p_threads);
@@ -108,12 +120,23 @@ threadpool_create (size_t thread_count)
     return NULL;
 }
 
+/**
+ * @brief Adds a new job to the threadpool job queue. If stop signal
+ *          received then no jobs will be added to queue.
+ * 
+ * @param p_threadpool threadpool context to add job to.
+ * @param p_job_func function pointer. Signature defined in threadpool.h
+ * @param p_data data to be passed to the function. User is responsible for
+ *               freeing dynamically allocated memory.
+ * @return true successfully added a job
+ * @return false no job added to threadpool
+ */
 bool
 threadpool_add_job (threadpool_t * p_threadpool, job_f p_job_func, void * p_data)
 {
     job_t * p_job = calloc(1, sizeof(job_t));
 
-    if ((!p_job) || (!p_threadpool) || (!p_job_func))
+    if ((!p_job) || (!p_threadpool) || (!p_job_func) || (!p_threadpool->p_signals->b_run))
     {
         free(p_job);
         p_job = NULL;
@@ -126,16 +149,16 @@ threadpool_add_job (threadpool_t * p_threadpool, job_f p_job_func, void * p_data
 
     pthread_mutex_lock(&p_threadpool->p_signals->mutex);
 
-    if (!p_threadpool->p_jobs_head)
+    if (!p_threadpool->p_jobs_head) // empty queue
     {
         p_threadpool->p_jobs_head = p_job;
     }
-    else if (!p_threadpool->p_jobs_tail)
+    else if (!p_threadpool->p_jobs_tail) // one job in queue
     {
         p_threadpool->p_jobs_head->p_next = p_job;
         p_threadpool->p_jobs_tail = p_job;
     }
-    else
+    else // multiple jobs in queue
     {
         p_threadpool->p_jobs_tail->p_next = p_job;
         p_threadpool->p_jobs_tail = p_job;
@@ -147,6 +170,12 @@ threadpool_add_job (threadpool_t * p_threadpool, job_f p_job_func, void * p_data
     return true;
 }
 
+/**
+ * @brief Gracefully shutdowns the threadpool. Will complete queued jobs and
+ *        then begin the shutdown process. This function frees allocated memory.
+ * 
+ * @param pp_threadpool pointer to threadpool context to shutdown.
+ */
 void
 threadpool_shutdown (threadpool_t ** pp_threadpool)
 {
@@ -162,6 +191,7 @@ threadpool_shutdown (threadpool_t ** pp_threadpool)
     pthread_cond_broadcast(&(*pp_threadpool)->p_signals->cond);
     pthread_mutex_unlock(&(*pp_threadpool)->p_signals->mutex);
 
+    // join threads
     for (size_t idx = 0; idx < (*pp_threadpool)->thread_count; idx++)
     {
         pthread_join((*pp_threadpool)->p_threads[idx], NULL);
@@ -177,6 +207,13 @@ threadpool_shutdown (threadpool_t ** pp_threadpool)
 
 /*** private functions ***/
 
+/**
+ * @brief initializes the mutex and conditional for the threadpool.
+ *          sets the run flag to true.
+ * 
+ * @return signal_t* new signal context.
+ * @return NULL on error
+ */
 static signal_t *
 init_signals (void)
 {
@@ -192,6 +229,7 @@ init_signals (void)
 
     p_signals->b_run = true;
 
+    // either a mutex or conditional was unable to be initialized, so destroy them.
     if ((0 != mutex_res) || (0 != cond_res))
     {
 
@@ -212,6 +250,11 @@ init_signals (void)
     return p_signals;
 }
 
+/**
+ * @brief destroys a signal context. Frees associated memory
+ * 
+ * @param pp_signals pointer to signal context
+ */
 static void
 destroy_signals (signal_t ** pp_signals)
 {
@@ -227,6 +270,14 @@ destroy_signals (signal_t ** pp_signals)
 
 }
 
+/**
+ * @brief puts a thread in a wait status until a job becomes available. Once
+ *          a thread gets a job it will execute the function (job_f). Will 
+ *          finish up queued jobs when shutdown signal received.
+ * 
+ * @param p_threadpool 
+ * @return void* 
+ */
 static void *
 handle_jobs (threadpool_t * p_threadpool)
 {
@@ -236,12 +287,15 @@ handle_jobs (threadpool_t * p_threadpool)
     {
         pthread_mutex_lock(&p_threadpool->p_signals->mutex);
 
+        // if the job pool is empty, wait. If stop signal recieved or job
+        //  available, breakout
         while (p_threadpool->p_signals->b_run && !jobs_waiting(p_threadpool))
         {
             pthread_cond_wait(&p_threadpool->p_signals->cond,
                               &p_threadpool->p_signals->mutex);
         }
 
+        // if stop signal recieved and there are no jobs in job queue, breakout
         if ((!p_threadpool->p_signals->b_run) && !jobs_waiting(p_threadpool))
         {
             pthread_mutex_unlock(&p_threadpool->p_signals->mutex);
@@ -252,7 +306,9 @@ handle_jobs (threadpool_t * p_threadpool)
 
         pthread_mutex_unlock(&p_threadpool->p_signals->mutex);
 
-        p_curr_job->p_job_func(&p_threadpool->p_signals->b_run, p_curr_job->p_data);
+        // calling job function here
+        p_curr_job->p_job_func(&p_threadpool->p_signals->b_run,
+                               p_curr_job->p_data);
 
         free(p_curr_job);
         p_curr_job = NULL;
@@ -261,12 +317,26 @@ handle_jobs (threadpool_t * p_threadpool)
     return NULL;
 }
 
+/**
+ * @brief determines if there are waiting jobs in the job queue
+ * 
+ * @param p_threadpool threadpool context
+ * @return true jobs are waiting
+ * @return false no jobs are waiting
+ */
 static bool
 jobs_waiting (threadpool_t * p_threadpool)
 {
     return ((p_threadpool) && (p_threadpool->p_jobs_head));
 }
 
+/**
+ * @brief Pull the next job in the job queue
+ * 
+ * @param p_threadpool threadpool context
+ * @return job_t* job at the head of the queue
+ * @return NULL no job in queue
+ */
 static job_t *
 get_job (threadpool_t * p_threadpool)
 {
