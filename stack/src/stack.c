@@ -259,9 +259,11 @@ void destroy_stack (stack_t * stack)
     }
 
     stack->delete_func(current);
-    stack->top      = NULL;
-    stack->bottom   = NULL;
-    stack->size     = 0;
+    stack->top          = NULL;
+    stack->bottom       = NULL;
+    stack->delete_func  = NULL;
+    stack->print_func   = NULL;
+    stack->size         = 0;
     CLEAN(stack);
 }
 
