@@ -276,7 +276,12 @@ void destroy_queue (queue_t * queue)
     }
 
     queue->delete_func(current);
-    queue->size = 0;
+    queue->head         = NULL;
+    queue->tail         = NULL;
+    queue->delete_func  = NULL;
+    queue->compare_func = NULL;
+    queue->print_func   = NULL;
+    queue->size         = 0;
     CLEAN(queue);
 }
 

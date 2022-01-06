@@ -46,7 +46,7 @@ typedef struct queue
 } queue_t;
 
 // free/NULL macro for redundancy removal
-#define CLEAN(a) if (a) free(a);(a)=NULL;
+#define CLEAN(a) if (a) free(a); (a)=NULL;
 
 /**
  * @brief - initializes and empty queue container and allocates it to the heap.
