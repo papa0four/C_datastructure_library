@@ -658,7 +658,13 @@ void destroy_list (sll_t * sll)
         sll->delete_func(temp);
     }
     sll->delete_func(current);
-    sll->size = 0;
+    sll->head           = NULL;
+    sll->tail           = NULL;
+    sll->compare_func   = NULL;
+    sll->delete_func    = NULL;
+    sll->print_func     = NULL;
+    sll->pnode_func     = NULL;
+    sll->size           = 0;
     CLEAN(sll);
 }
 
