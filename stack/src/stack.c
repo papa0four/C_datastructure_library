@@ -38,10 +38,15 @@ stack_t * init (del_f del_func_t, print_f print_func_t)
 }
 
 /**
- * @brief -
- * @param data
- * @param pnode_func_t
- * @return -
+ * @brief - a helper function that allocates memory to the heap, creating a stack node container. This node stores the
+ *          relevant data passed as well as the appropriate print type function pointer to view the node data.
+ * @param data - (void *) a generic pointer to the node data to be stored
+ * @param pnode_func_t - (print_n) a function pointer to allow the user to print the data stored within the node
+ * @return - (struct node_t *) ON SUCCESS: creates a stack node, storing the appropriate data and print function pointer.
+ *           Also sets the initial node index to 0, to be updated during the push function to the appropriate value
+ *           along with its next pointer, pointing to the previous node that was at the top of the stack before push was
+ *           called. There is one instance in which create_node may fail. If the call to calloc does not operate as
+ *           intended, create_node will return a NULL pointer, print a error message to the user and set errno to ENOMEM.
  */
 static node_t * create_node (void * data, print_n pnode_func_t)
 {
@@ -148,15 +153,15 @@ int push (stack_t * stack, void * data, print_n pnode_func_t)
 
     if (NULL == stack->top)
     {
-        stack->top = new;
-        stack->bottom = new;
-        new->next = NULL;
+        stack->top      = new;
+        stack->bottom   = new;
+        new->next       = NULL;
         stack->size++;
     }
     else
     {
-        new->next = stack->top;
-        stack->top = new;
+        new->next   = stack->top;
+        stack->top  = new;
         increment_idx(stack);
         stack->size++;
     }
@@ -248,13 +253,15 @@ void destroy_stack (stack_t * stack)
     node_t * temp      = NULL;
     while (current->next)
     {
-        temp = current;
+        temp    = current;
         current = current->next;
         stack->delete_func(temp);
     }
 
     stack->delete_func(current);
-    stack->size = 0;
+    stack->top      = NULL;
+    stack->bottom   = NULL;
+    stack->size     = 0;
     CLEAN(stack);
 }
 
