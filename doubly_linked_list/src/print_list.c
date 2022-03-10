@@ -6,13 +6,7 @@
 
 void print_list_int (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -34,13 +28,7 @@ void print_list_int (dll_t * dll)
 
 void print_list_float (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -62,13 +50,7 @@ void print_list_float (dll_t * dll)
 
 void print_list_double (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -90,13 +72,7 @@ void print_list_double (dll_t * dll)
 
 void print_list_str (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -118,13 +94,7 @@ void print_list_str (dll_t * dll)
 
 void print_list_uint8 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -146,13 +116,7 @@ void print_list_uint8 (dll_t * dll)
 
 void print_list_int8 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -174,13 +138,7 @@ void print_list_int8 (dll_t * dll)
 
 void print_list_uint16 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -202,13 +160,7 @@ void print_list_uint16 (dll_t * dll)
 
 void print_list_int16 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -230,13 +182,7 @@ void print_list_int16 (dll_t * dll)
 
 void print_list_uint32 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -258,13 +204,7 @@ void print_list_uint32 (dll_t * dll)
 
 void print_list_uint64 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -286,13 +226,7 @@ void print_list_uint64 (dll_t * dll)
 
 void print_list_int64 (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
@@ -314,13 +248,7 @@ void print_list_int64 (dll_t * dll)
 
 void print_list_bool (dll_t * dll)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_1, dll);
 
     if (NULL == dll->head)
     {
