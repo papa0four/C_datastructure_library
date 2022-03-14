@@ -375,6 +375,7 @@ void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_
         }
 
         find->next = new_node;
+        new_node->prev  = find;
         new_node->next  = next;
         new_node->index = next->index;
         increment_index(dll, next);
