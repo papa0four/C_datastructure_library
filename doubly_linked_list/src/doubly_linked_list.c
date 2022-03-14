@@ -23,11 +23,12 @@ void param_check (const char * fname, int line_no, int n_args, ...)
     va_end(var_list);
 }
 
-dll_t * init (cmp_f cmp_func_t,
+dll_t * init (memcmp_f memcmp_t,
+             cmp_f cmp_func_t,
              del_f del_func_t,
              print_f print_func_t)
 {
-    param_check(__FILE__, __LINE__, ARG_3, cmp_func_t, del_func_t, print_func_t);
+    param_check(__FILE__, __LINE__, ARG_4, memcmp_t, cmp_func_t, del_func_t, print_func_t);
 
     dll_t * dll = calloc(1, sizeof(dll_t));
     if (NULL == dll)
@@ -42,6 +43,7 @@ dll_t * init (cmp_f cmp_func_t,
     dll->tail = NULL;
     dll->size = 0;
 
+    dll->memcmp_func  = memcmp_t;
     dll->compare_func = cmp_func_t;
     dll->delete_func  = del_func_t;
     dll->print_func   = print_func_t;
@@ -208,7 +210,7 @@ void insert_new_head (dll_t * dll, const void * data, print_n pnode_func_t)
         }
         dll->head               = new_head;
         new_head->next          = old_head;
-        new_head->next->prev    = new_head;
+        old_head->prev    = new_head;
         dll->size++;
         increment_index(dll, old_head);
     }
@@ -277,39 +279,9 @@ void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func
 
 void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode_func_t)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: linked list parameter passed is NULL: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_4, dll, start_node, data, pnode_func_t);
 
-    if (NULL == start_node)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: start_node parameter passed is NULL: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
-
-    if (NULL == data)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: data parameter passed is NULL: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
-
-    if (NULL == pnode_func_t)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: node print function passed is NULL: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
-
-    if (0 == dll->compare_func(dll->head->data, start_node->data))
+    if (0 == dll->memcmp_func(dll->head, start_node))
     {
         insert_new_head(dll, data, pnode_func_t);
     }
@@ -319,7 +291,7 @@ void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode
         node_t * next    = NULL;
         while (current)
         {
-            if (0 == dll->compare_func(current->next->data, start_node->data))
+            if (0 == dll->memcmp_func(current->next, start_node))
             {
                 next = current->next;
                 break;
@@ -344,6 +316,7 @@ void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode
         }
 
         current->next   = new_node;
+        new_node->prev  = current;
         new_node->next  = next;
         new_node->index = next->index;
         increment_index(dll, next);
@@ -353,39 +326,9 @@ void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode
 
 void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_func_t)
 {
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: linked list parameter passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_4, dll, start_node, data, pnode_func_t);
 
-    if (NULL == start_node)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: start_node parameter passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
-
-    if (NULL == data)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: data parameter passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return;
-    }
-
-    if (NULL == pnode_func_t)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: nopde print function passed is NULL: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
-
-    if (0 == dll->compare_func(dll->head->data, start_node->data))
+    if (0 == dll->memcmp_func(dll->head->data, start_node->data))
     {
         node_t * next = dll->head->next;
         node_t * new_node = create_node(data, pnode_func_t);
@@ -396,6 +339,7 @@ void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_
             return;
         }
         dll->head->next = new_node;
+        new_node->prev  = dll->head;
         new_node->next  = next;
         new_node->index = next->index;
         increment_index(dll, next);
@@ -477,6 +421,38 @@ node_t * find_by_index (dll_t * dll, size_t index)
     return current;
 }
 
+static node_t * find_helper (dll_t * dll, const void * data)
+{
+    node_t * current = dll->head;
+    while (current)
+    {
+        if (0 == dll->compare_func(current->data, data))
+        {
+            return current;
+        }
+
+        current = current->next;
+    }
+
+    return NULL;
+}
+
+static node_t * continue_helper(dll_t * dll, node_t * current, const void * data)
+{
+    while (current)
+    {
+        if (0 == dll->compare_func(current, data))
+        {
+            node_t * node = current;
+            return node;
+        }
+
+        current = current->next;
+    }
+
+    return NULL;
+}
+
 node_t * find_node (dll_t * dll, const void * data)
 {
     if (NULL == dll)
@@ -501,6 +477,25 @@ node_t * find_node (dll_t * dll, const void * data)
     {
         if (0 == dll->compare_func(node_to_find->data, data))
         {
+            
+            node_t * node_check = find_helper(dll, data);
+            if (NULL == node_check)
+            {
+                fprintf(stderr, "%s: could not find requested node in list\n", __func__);
+                return NULL;
+            }
+            if (0 == dll->memcmp_func(node_to_find, node_check))
+            {
+                break;
+            }
+            else
+            {
+                node_check = continue_helper(dll, node_to_find, data);
+                if (NULL == node_check)
+                {
+                    return NULL;
+                }
+            }
             break;
         }
 
@@ -530,18 +525,13 @@ size_t get_list_size (dll_t * dll)
 
 void remove_node (dll_t * dll, const void * data)
 {
-    if ((NULL == dll) || (NULL== data))
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: one or more parameters passed are NULL: %s\n",
-                        __func__, strerror(errno));
-        return;
-    }
+    param_check(__FILE__, __LINE__, ARG_2, dll, data);
 
     if (0 == dll->compare_func(dll->head->data, data))
     {
         node_t * old_head = dll->head;
         dll->head         = old_head->next;
+        dll->head->prev   = NULL;
         dll->delete_func(old_head);
         dll->size--;
         decrement_index(dll, 0);
@@ -558,6 +548,7 @@ void remove_node (dll_t * dll, const void * data)
                 temp = current->next;
                 dll->delete_func(temp);
                 current->next   = NULL;
+                current->prev   = dll->tail;
                 dll->tail       = current;
                 dll->size--;
                 break;
@@ -575,8 +566,9 @@ void remove_node (dll_t * dll, const void * data)
             if (0 == dll->compare_func(current->next->data, data))
             {
                 temp = current->next;
-                size_t index    = temp->index;
-                current->next   = current->next->next;
+                size_t index        = temp->index;
+                current->next       = current->next->next;
+                current->next->prev = current;
                 dll->delete_func(temp);
                 dll->size--;
                 decrement_index(dll, index);

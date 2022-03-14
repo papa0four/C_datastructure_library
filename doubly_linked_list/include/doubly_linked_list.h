@@ -25,6 +25,8 @@ typedef struct dll_node node_t;
 typedef struct sl_list dll_t;
 // declaration of the linked list node compare function pointer
 typedef int (*cmp_f) (const void * a, const void * b);
+// declaration of the linkled list node memory compare function pointer
+typedef int (*memcmp_f) (const void * a, const void * b);
 // declaration of the linked list node delete function pointer
 typedef void (*del_f) (void * node_t);
 // declaration of the linked list print list function pointer
@@ -46,6 +48,7 @@ typedef struct sl_list
     node_t * head;      // 0th index suggesting first node within the list
     node_t * tail;      // nth index suggesting last node within the list
     size_t   size;      // the total number of nodes contained within the list
+    memcmp_f memcmp_func; // the linked lists's node memory comparison function pointer
     cmp_f    compare_func; // the linked list compare node's data function pointer
     del_f    delete_func; // the linked list delete node function pointer
     print_f  print_func; // the linked list print formatted list function pointer
@@ -54,6 +57,7 @@ typedef struct sl_list
 /**
  * @brief - initializes an empty singly linked list structure. Set the HEAD and TAIL to NULL
  *          and sets the initial size to 0. NOTE: This does not allocate any nodes or node data.
+ * @param memcmp_t - (memcmp_f) the specified node memory comparison function pointer
  * @param cmp_func_t - (cmp_f) the specified node data compare function pointer
  * @param del_func_t - (del_f) function pointer to all the list to appropriately free and NULL'ify
  *                     the specified node
@@ -69,7 +73,8 @@ typedef struct sl_list
  *           as the data structure will be unusable potentially causing SEGMENTATION FAULTS, crashing
  *           the user's program.
  */
- dll_t * init(cmp_f cmp_func_t,
+ dll_t * init(memcmp_f memcmp_t,
+              cmp_f cmp_func_t,
               del_f del_func_t,
               print_f print_func_t);
 
