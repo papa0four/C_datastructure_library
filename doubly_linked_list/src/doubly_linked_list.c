@@ -540,13 +540,14 @@ void destroy_list (dll_t * dll)
 
     node_t * current    = dll->head;
     node_t * temp       = NULL;
-    while (current->next)
+    while (current)
     {
         temp    = current;
         current = current->next;
+        dll->delete_func(temp->data);
         dll->delete_func(temp);
     }
-    dll->delete_func(current);
+    
     dll->head           = NULL;
     dll->tail           = NULL;
     dll->memcmp_func    = NULL;

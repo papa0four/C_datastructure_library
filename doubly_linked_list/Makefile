@@ -1,6 +1,6 @@
 # tool macros
 CC := gcc
-CFLAGS := -g -Wall -Wpedantic -std=c11
+CFLAGS := -g -Wall -Wpedantic -Werror -Wextra -std=c11
 CCOBJFLAGS := $(CFLAGS) -c
 
 # path macros
@@ -56,6 +56,15 @@ clean:
 	@echo CLEAN $(CLEAN_LIST)
 	@rm -rf $(CLEAN_LIST)
 
+debug: CFLAGS += -ggdb3
+debug: default $(TARGET)
+
+good: clean debug
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./$(TARGET)
+
+test: clean default
+	./$(TARGET)
+	
 .PHONY: distclean
 distclean:
 	@echo CLEAN $(DISTCLEAN_LIST)
