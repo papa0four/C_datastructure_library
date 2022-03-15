@@ -113,8 +113,8 @@ int append (dll_t * dll, void * node_data, print_n pnode_func_t)
         }
 
         new->prev       = dll->tail;
-        dll->tail->next = new;
         new->index      = dll->size;
+        dll->tail->next = new;
         dll->tail       = new;
         dll->size++;
     }
@@ -422,94 +422,28 @@ node_t * find_by_index (dll_t * dll, size_t index)
     return current;
 }
 
-static node_t * find_helper (dll_t * dll, const void * data)
+node_t * find_node (dll_t * dll, const void * data)
 {
+    param_check(__FILE__, __LINE__, ARG_2, dll, data);
+
     node_t * current = dll->head;
+
     while (current)
     {
         if (0 == dll->compare_func(current->data, data))
         {
-            return current;
-        }
-
-        current = current->next;
-    }
-
-    return NULL;
-}
-
-static node_t * continue_helper(dll_t * dll, node_t * current, const void * data)
-{
-    while (current)
-    {
-        if (0 == dll->compare_func(current, data))
-        {
-            node_t * node = current;
-            return node;
-        }
-
-        current = current->next;
-    }
-
-    return NULL;
-}
-
-node_t * find_node (dll_t * dll, const void * data)
-{
-    if (NULL == dll)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: list container passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return NULL;
-    }
-
-    if (NULL == data)
-    {
-        errno = EINVAL;
-        fprintf(stderr, "%s: data pointer passed is NULL: %s\n",
-                __func__, strerror(errno));
-        return NULL;
-    }
-
-    node_t * node_to_find = dll->head;
-
-    while (node_to_find)
-    {
-        if (0 == dll->compare_func(node_to_find->data, data))
-        {
-            
-            node_t * node_check = find_helper(dll, data);
-            if (NULL == node_check)
-            {
-                fprintf(stderr, "%s: could not find requested node in list\n", __func__);
-                return NULL;
-            }
-            if (0 == dll->memcmp_func(node_to_find, node_check))
-            {
-                break;
-            }
-            else
-            {
-                node_check = continue_helper(dll, node_to_find, data);
-                if (NULL == node_check)
-                {
-                    return NULL;
-                }
-            }
             break;
         }
 
-        node_to_find = node_to_find->next;
+        current = current->next;
     }
 
-    if (NULL == node_to_find)
+    if (NULL == current)
     {
-        fprintf(stderr, "%s: node requested does not exist in list\n", __func__);
-        return node_to_find;
+        fprintf(stderr, "%s(): could not find specified node in list\n", __func__);
     }
 
-    return node_to_find;
+    return current;
 }
 
 size_t get_list_size (dll_t * dll)
@@ -615,6 +549,7 @@ void destroy_list (dll_t * dll)
     dll->delete_func(current);
     dll->head           = NULL;
     dll->tail           = NULL;
+    dll->memcmp_func    = NULL;
     dll->compare_func   = NULL;
     dll->delete_func    = NULL;
     dll->print_func     = NULL;
