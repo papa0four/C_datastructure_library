@@ -44,7 +44,6 @@
 
 #Testing
 *main
-.gitignore
 
 # Kernel Module Compile Results
 *.mod*
