@@ -144,4 +144,10 @@ void print_int64 (void * data);
  */
 void print_bool (void * data);
 
+/**
+ * @brief 
+ * 
+ */
+void print_custom_default (void * data);
+
 #endif //DOUBLY_LINKED_LIST_PRINT_NODE_H

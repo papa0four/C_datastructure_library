@@ -268,4 +268,26 @@ void print_list_bool (dll_t * dll)
     }
 }
 
+void print_list_custom_default (dll_t * dll)
+{
+    param_check(__FILE__, __LINE__, ARG_1, dll);
+
+    if (NULL == dll->head)
+    {
+        fprintf(stdout, "LIST: { [EMPTY] }\n");
+    }
+    else
+    {
+        node_t * current = dll->head;
+        fprintf(stdout, "LIST: { ");
+        while (current->next)
+        {
+            fprintf(stdout, "[ idx %ld: %p ] --> ", current->index, (void *)current);
+            current = current->next;
+        }
+
+        fprintf(stdout, "[ idx %ld: %p ] --| }\n", current->index, (void *)current);
+    }
+}
+
 /*** end of print_list.c ***/

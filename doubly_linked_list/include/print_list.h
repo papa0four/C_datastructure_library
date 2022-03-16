@@ -132,4 +132,10 @@ void print_list_int64 (dll_t * dll);
  */
 void print_list_bool (dll_t * dll);
 
+/**
+ * @brief 
+ * 
+ */
+void print_list_custom_default (dll_t * dll);
+
 #endif //DOUBLY_LINKED_LIST_PRINT_LIST_H

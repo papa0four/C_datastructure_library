@@ -160,4 +160,16 @@ void print_bool (void * data)
     fprintf(stdout, "Next Node Address: %p\n]\n", (void *)bool_node->next);
 }
 
+void print_custom_default (void * data)
+{
+    param_check(__FILE__, __LINE__, ARG_1, data);
+
+    node_t * custom_node = (node_t *)data;
+    fprintf(stdout, "Node %ld Data: \n[\n\t", custom_node->index);
+    fprintf(stdout, "Memory Address: %p\n\t", (void *)custom_node);
+    fprintf(stdout, "Node Index: %ld\n\t", custom_node->index);
+    fprintf(stdout, "Previous Node Address: %p\n\t", (void *)custom_node->prev);
+    fprintf(stdout, "Next Node Address: %p\n]\n", (void *)custom_node->next);
+}
+
 /*** end print_node.c ***/

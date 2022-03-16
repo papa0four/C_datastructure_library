@@ -13,12 +13,6 @@
 #include <stdarg.h>
 #include "macros.h"
 
-// inline void check_wout_ret( void * a)
-// {
-//     CHECK(a);
-//     return;
-// }
-
 // declaration of the linked list node struct container
 typedef struct dll_node node_t;
 // declaration of the linked list struct container
@@ -73,10 +67,7 @@ typedef struct sl_list
  *           as the data structure will be unusable potentially causing SEGMENTATION FAULTS, crashing
  *           the user's program.
  */
- dll_t * init(memcmp_f memcmp_t,
-              cmp_f cmp_func_t,
-              del_f del_func_t,
-              print_f print_func_t);
+ dll_t * init(uint16_t node_type);
 
 
  /**
@@ -99,7 +90,7 @@ typedef struct sl_list
   *           will be displayed to the user via STDERR. NOTE: in the second instance, it is up to the user
   *           check the return value of append before moving on to prevent crashing their program.
   */
-int append(dll_t * dll, void * node_data, print_n pnode_funct_t);
+int append(dll_t * dll, void * node_data, uint16_t node_type);
 
 /**
  * @brief - inserts a newly allocated node to an existing or empty linked list. If there are currently no
@@ -123,7 +114,7 @@ int append(dll_t * dll, void * node_data, print_n pnode_funct_t);
  *           return a NULL pointer, however, this is handled within insert_new_head and the appropriate error message
  *           will be displayed via STDERR and errno will be set based upon the error that occurred.
  */
-void insert_new_head (dll_t * dll, const void * data, print_n pnode_func_t);
+void insert_new_head (dll_t * dll, const void * data, uint16_t node_type);
 
 /**
  * @brief - this function is meant to iterate over an existing list, and determine the appropriate insertion
@@ -151,7 +142,7 @@ void insert_new_head (dll_t * dll, const void * data, print_n pnode_func_t);
  *           at the desired location. NOTE: the user may check for success by calling the print_func member within the list
  *           container, to display all nodes currently within list.
  */
-void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func_t);
+void insert_at_index (dll_t * dll, void * data, size_t index, uint16_t node_type);
 
 /**
  * @brief - the intent of this function is for the user to provide a specific node that currently exists within the list
@@ -180,7 +171,7 @@ void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func
  *           this instance, errno will be set to the corresponding error, an appropriate error message will be displayed to
  *           the user and the desired node will not be inserted into the linked list container.
  */
-void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode_func_t);
+void insert_before (dll_t * dll, node_t * start_node, void * data, uint16_t node_type);
 
 /**
  * @brief - the purpose of this function is to insert a new linked list node into the container after a specified,
@@ -210,7 +201,7 @@ void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode
  *           a NULL pointer, errno will be set appropriately with its corresponding error message being displayed to the
  *           user, and no node will be inserted into the linked list.
  */
-void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_func_t);
+void insert_after (dll_t * dll, node_t * start_node, void * data, uint16_t node_type);
 
 /**
  * @brief - this function allows the user to search for a specific node based upon its location within the linked list

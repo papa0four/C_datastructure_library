@@ -12,7 +12,24 @@
 #define ARG_4   4
 #define ARG_5   5
 
-#define BUFF_SZ 128
+#define INT_T       0x00
+#define FLT_T       0x01
+#define DBL_T       0x02
+#define STR_T       0x03
+#define UINT8_T     0x04
+#define INT8_T      0x05
+#define UINT16_T    0x06
+#define INT16_T     0x07
+#define UINT32_T    0x08
+#define UINT64_T    0x09
+#define INT64_T     0x0a
+#define BOOL_T      0x0b
+
+/* reserved for custom node data types i.e. structs */
+#define CUSTOM_T    0x0c
+
+/* used if the user creates their own node print function */
+#define USR_DEFINE_T 0x0d
 
 /* ERROR Log output used for parameter checking in functions */
 #define ERR_LOG(idx,file,line,err) fprintf(stderr, "\nERROR:\nparameter %d passed is NULL: %s\n" \

@@ -23,12 +23,131 @@ void param_check (const char * fname, int line_no, int n_args, ...)
     va_end(var_list);
 }
 
-dll_t * init (memcmp_f memcmp_t,
-             cmp_f cmp_func_t,
-             del_f del_func_t,
-             print_f print_func_t)
+static dll_t * det_func (dll_t * dll, uint16_t flag)
 {
-    param_check(__FILE__, __LINE__, ARG_4, memcmp_t, cmp_func_t, del_func_t, print_func_t);
+    param_check(__FILE__, __LINE__, ARG_1, dll);
+
+    dll->memcmp_func  = cmp_address_t;
+    dll->delete_func  = delete_node;
+
+    switch (flag)
+    {
+        case (INT_T):
+        {
+            dll->compare_func   = cmp_int_t;
+            dll->print_func     = print_list_int;
+            break;
+        }
+
+        case (FLT_T):
+        {
+            dll->compare_func   = cmp_flt_t;
+            dll->print_func     = print_list_float;
+            break;
+        }
+
+        case (DBL_T):
+        {
+            dll->compare_func   = cmp_dbl_t;
+            dll->print_func     = print_list_double;
+            break;
+        }
+
+        case (STR_T):
+        {
+            dll->compare_func   = cmp_str_t;
+            dll->print_func     = print_list_str;
+            break;
+        }
+
+        case (UINT8_T):
+        {
+            dll->compare_func   = cmp_uint8_t;
+            dll->print_func     = print_list_uint8;
+            break;
+        }
+
+        case (INT8_T):
+        {
+            dll->compare_func   = cmp_int8_t;
+            dll->print_func     = print_list_int8;
+            break;
+        }
+
+        case (UINT16_T):
+        {
+            dll->compare_func   = cmp_uint16_t;
+            dll->print_func     = print_list_uint16;
+            break;
+        }
+
+        case (INT16_T):
+        {
+            dll->compare_func   = cmp_int16_t;
+            dll->print_func     = print_list_int16;
+            break;
+        }
+
+        case (UINT32_T):
+        {
+            dll->compare_func   = cmp_uint32_t;
+            dll->print_func     = print_list_uint32;
+            break;
+        }
+
+        case (UINT64_T):
+        {
+            dll->compare_func   = cmp_uint64_t;
+            dll->print_func     = print_list_uint64;
+            break;
+        }
+
+        case (INT64_T):
+        {
+            dll->compare_func   = cmp_int64_t;
+            dll->print_func     = print_list_int64;
+            break;
+        }
+
+        case (BOOL_T):
+        {
+            dll->compare_func   = cmp_bool_t;
+            dll->print_func     = print_list_bool;
+            break;
+        }
+
+        case (CUSTOM_T):
+        {
+            dll->compare_func   = cmp_address_t;
+            dll->print_func     = print_list_custom_default;
+            break;
+        }
+
+        case (USR_DEFINE_T):
+        {
+            dll->compare_func   = cmp_address_t;
+            break;
+        }
+
+        default:
+        {
+            dll = NULL;
+            break;
+        }
+    }
+
+    return dll;
+}
+
+dll_t * init (uint16_t node_type)
+{
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
 
     dll_t * dll = calloc(1, sizeof(dll_t));
     if (NULL == dll)
@@ -39,16 +158,119 @@ dll_t * init (memcmp_f memcmp_t,
         return NULL;
     }
 
+    dll = det_func(dll, node_type);
+    if (NULL == dll)
+    {
+        fprintf(stderr, "%s(): error occurred setting up list: functions could not be determined\n",
+                        __func__);
+        return NULL;
+    }
+    
+
     dll->head = NULL;
     dll->tail = NULL;
     dll->size = 0;
 
-    dll->memcmp_func  = memcmp_t;
-    dll->compare_func = cmp_func_t;
-    dll->delete_func  = del_func_t;
-    dll->print_func   = print_func_t;
-
     return dll;
+}
+
+static node_t * det_node_func (node_t * node, uint16_t flag)
+{
+    param_check(__FILE__, __LINE__, ARG_1, node);
+
+    switch (flag)
+    {
+        case (INT_T):
+        {
+            node->pnode_func     = print_int;
+            break;
+        }
+
+        case (FLT_T):
+        {
+            node->pnode_func     = print_float;
+            break;
+        }
+
+        case (DBL_T):
+        {
+            node->pnode_func     = print_double;
+            break;
+        }
+
+        case (STR_T):
+        {
+            node->pnode_func     = print_string;
+            break;
+        }
+
+        case (UINT8_T):
+        {
+            node->pnode_func     = print_uint8;
+            break;
+        }
+
+        case (INT8_T):
+        {
+            node->pnode_func     = print_int8;
+            break;
+        }
+
+        case (UINT16_T):
+        {
+            node->pnode_func     = print_uint16;
+            break;
+        }
+
+        case (INT16_T):
+        {
+            node->pnode_func     = print_int16;
+            break;
+        }
+
+        case (UINT32_T):
+        {
+            node->pnode_func     = print_uint32;
+            break;
+        }
+
+        case (UINT64_T):
+        {
+            node->pnode_func     = print_uint64;
+            break;
+        }
+
+        case (INT64_T):
+        {
+            node->pnode_func     = print_int64;
+            break;
+        }
+
+        case (BOOL_T):
+        {
+            node->pnode_func     = print_bool;
+            break;
+        }
+
+        case (CUSTOM_T):
+        {
+            node->pnode_func     = print_custom_default;
+            break;
+        }
+
+        case (USR_DEFINE_T):
+        {
+            break;
+        }
+
+        default:
+        {
+            node = NULL;
+            break;
+        }
+    }
+
+    return node;
 }
 
 /**
@@ -66,7 +288,7 @@ dll_t * init (memcmp_f memcmp_t,
  *           call to calloc fails (system level failure) in which, errno will be set to ENOMEM
  *           and create_node will return a NULL pointer.
  */
-static node_t * create_node (void * data, print_n pnode_func_t)
+static node_t * create_node (void * data, uint16_t node_type)
 {
     node_t * node = calloc(1, sizeof(node_t));
     if (NULL == node)
@@ -77,23 +299,32 @@ static node_t * create_node (void * data, print_n pnode_func_t)
         return NULL;
     }
 
+    node = det_node_func(node, node_type);
+
     node->index         = 0;
     node->data          = data;
     node->prev          = NULL;
     node->next          = NULL;
-    node->pnode_func    = pnode_func_t;
 
     return node;
 }
 
-int append (dll_t * dll, void * node_data, print_n pnode_func_t)
+int append (dll_t * dll, void * node_data, uint16_t node_type)
 {
-    param_check(__FILE__, __LINE__, ARG_3, dll, node_data, pnode_func_t);
+    param_check(__FILE__, __LINE__, ARG_2, dll, node_data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return -1;
+    }
 
     node_t * new = NULL;
     if (NULL == dll->head)
     {
-        new = create_node(node_data, pnode_func_t);
+        new = create_node(node_data, node_type);
         if (NULL == new)
         {
             fprintf(stderr, "%s: could not create new node\n", __func__);
@@ -105,7 +336,7 @@ int append (dll_t * dll, void * node_data, print_n pnode_func_t)
     }
     else
     {
-        new = create_node(node_data, pnode_func_t);
+        new = create_node(node_data, node_type);
         if (NULL == new)
         {
             fprintf(stderr, "%s: could not create new node\n", __func__);
@@ -187,13 +418,21 @@ static void increment_index (dll_t * dll, node_t * start_node)
     }
 }
 
-void insert_new_head (dll_t * dll, const void * data, print_n pnode_func_t)
+void insert_new_head (dll_t * dll, const void * data, uint16_t node_type)
 {
-    param_check(__FILE__, __LINE__, ARG_3, dll, data, pnode_func_t);
+    param_check(__FILE__, __LINE__, ARG_2, dll, data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
 
     if (NULL == dll->head)
     {
-        int ret_val = append(dll, (void *)data, pnode_func_t);
+        int ret_val = append(dll, (void *)data, node_type);
         if ((-1 == ret_val) || (1 == ret_val))
         {
             return;
@@ -202,28 +441,36 @@ void insert_new_head (dll_t * dll, const void * data, print_n pnode_func_t)
     else
     {
         node_t * old_head = dll->head;
-        node_t * new_head = create_node((void *)data, pnode_func_t);
+        node_t * new_head = create_node((void *)data, node_type);
         if (NULL == new_head)
         {
             fprintf(stderr, "%s: could not create new node\n", __func__);
             return;
         }
-        dll->head               = new_head;
-        new_head->next          = old_head;
+        dll->head         = new_head;
+        new_head->next    = old_head;
         old_head->prev    = new_head;
         dll->size++;
         increment_index(dll, old_head);
     }
 }
 
-void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func_t)
+void insert_at_index (dll_t * dll, void * data, size_t index, uint16_t node_type)
 {
-    param_check(__FILE__, __LINE__, ARG_4, dll, data, pnode_func_t);
+    param_check(__FILE__, __LINE__, ARG_2, dll, data);
 
     if (index > dll->size - 1)
     {
         errno = EINVAL;
         fprintf(stderr, "%s: index value passed cannot exceed list size: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
                         __func__, strerror(errno));
         return;
     }
@@ -238,7 +485,7 @@ void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func
 
     if (0 == index)
     {
-        insert_new_head(dll, (const void *)data, pnode_func_t);
+        insert_new_head(dll, (const void *)data, node_type);
         return;
     }
 
@@ -251,7 +498,7 @@ void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func
             prev    = current;
             current = current->next;
 
-            node_t * new_node = create_node(data, pnode_func_t);
+            node_t * new_node = create_node(data, node_type);
             if (NULL == new_node)
             {
                 fprintf(stderr, "%s: could not create new node to insert\n",
@@ -277,13 +524,21 @@ void insert_at_index (dll_t * dll, void * data, size_t index, print_n pnode_func
     }
 }
 
-void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode_func_t)
+void insert_before (dll_t * dll, node_t * start_node, void * data, uint16_t node_type)
 {
-    param_check(__FILE__, __LINE__, ARG_4, dll, start_node, data, pnode_func_t);
+    param_check(__FILE__, __LINE__, ARG_3, dll, start_node, data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
 
     if (0 == dll->memcmp_func(dll->head, start_node))
     {
-        insert_new_head(dll, data, pnode_func_t);
+        insert_new_head(dll, data, node_type);
     }
     else
     {
@@ -307,7 +562,7 @@ void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode
             return;
         }
 
-        node_t * new_node = create_node(data, pnode_func_t);
+        node_t * new_node = create_node(data, node_type);
         if (NULL == new_node)
         {
             fprintf(stderr, "%s: could not create node to be inserted\n",
@@ -324,14 +579,22 @@ void insert_before (dll_t * dll, node_t * start_node, void * data, print_n pnode
     }
 }
 
-void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_func_t)
+void insert_after (dll_t * dll, node_t * start_node, void * data, uint16_t node_type)
 {
-    param_check(__FILE__, __LINE__, ARG_4, dll, start_node, data, pnode_func_t);
+    param_check(__FILE__, __LINE__, ARG_3, dll, start_node, data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
 
     if (0 == dll->memcmp_func(dll->head->data, start_node->data))
     {
         node_t * next = dll->head->next;
-        node_t * new_node = create_node(data, pnode_func_t);
+        node_t * new_node = create_node(data, node_type);
         if (NULL == new_node)
         {
             fprintf(stderr, "%s: could not create new node to be inserted\n",
@@ -347,7 +610,7 @@ void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_
     }
     else if (0 == dll->compare_func(dll->tail->data, start_node->data))
     {
-        int ret_val = append(dll, data, pnode_func_t);
+        int ret_val = append(dll, data, node_type);
         if ((-1 == ret_val) || (1 == ret_val))
         {
             fprintf(stderr, "%s: could not insert new node\n",
@@ -366,7 +629,7 @@ void insert_after (dll_t * dll, node_t * start_node, void * data, print_n pnode_
         }
         node_t * next = find->next;
 
-        node_t * new_node = create_node(data, pnode_func_t);
+        node_t * new_node = create_node(data, node_type);
         if (NULL == new_node)
         {
             fprintf(stderr, "%s: could not create new node to be inserted\n",
