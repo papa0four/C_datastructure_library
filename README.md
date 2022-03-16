@@ -1,7 +1,7 @@
 # C_datastructure_library
 
 ## Contributors
-Jesse Sabatini
-James Horne
-Ben Gooch
-Jeremy Jackson
+Jesse Sabatini </br>
+James Horne < /br>
+Ben Gooch < /br>
+Jeremy Jackson < /br>
