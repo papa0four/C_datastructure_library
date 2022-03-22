@@ -28,7 +28,8 @@ ht* create_ht()
 }
 
 /**
- * @brief - This Function frees a hashtable and all items within it
+ * @brief - This Function frees a hashtable, interface must free the 
+ * keys and values however
  *  
  * @param table - A pointer to the hashtable being destroyed
  * 
@@ -40,20 +41,6 @@ void destroy_ht(ht* table)
     {
         if (table->items != NULL)
         {
-            if(table->length>0)
-            {
-                for (size_t i = 0; i < table->size; i++)
-                {
-                    if (table->items[i].key)
-                    {
-                        free(table->items[i].key);
-                    }
-                    if (table->items[i].value)
-                    {
-                        free(table->items[i].value);
-                    }
-                }
-            }
             free (table->items);
         }
         free(table);
@@ -84,7 +71,7 @@ int insert_key(ht* table, char* key, void* value, int overwrite)
                 goto set_error;
             }
         }
-        return_val = insert_key(table, key, value, overwrite);
+        return_val = insert_key_helper(table, key, value, overwrite);
     }
     set_error:
     return return_val;
@@ -109,6 +96,7 @@ int insert_key_helper(ht* table, char* key, void* value, int overwrite)
     {
         uint32_t hashed_key = hash(key);
         uint32_t index = hashed_key & (uint32_t)(table->size - 1);
+        int isInserted = 0;
         while ( table->items[index].key != NULL )
         {
             if(strncmp(key, table->items[index].key, strlen(key)) == 0 && 
@@ -116,8 +104,14 @@ int insert_key_helper(ht* table, char* key, void* value, int overwrite)
                 overwrite == 1)
             {
                 table->items[index].value = value;
-                table->length++;
                 return_val = 1;
+                isInserted = 1;
+            }
+            else if(strncmp(key, table->items[index].key, strlen(key)) == 0 && 
+                strlen(key) == strlen(table->items[index].key) &&
+                overwrite == 0)
+            {
+                goto insert_error;
             }
             index++;
             if(index >= table->size)
@@ -125,21 +119,9 @@ int insert_key_helper(ht* table, char* key, void* value, int overwrite)
                 index = 0;
             }
         }
-        if( table->items[index].key == NULL )
+        if( table->items[index].key == NULL && isInserted == 0)
         {
-            table->items[index].key = calloc(strlen(key) + 1, sizeof(char));
-            if(table->items[index].key  == NULL)
-            {
-            goto insert_error;
-            }
-            if(memcpy(table->items[index].key, key, strlen(key)) == NULL)
-            {
-                if(table->items[index].key )
-                {
-                    free(table->items[index].key );
-                }
-                goto insert_error;
-            }
+            table->items[index].key = key;
             table->items[index].value = value;
             table->length++;
             return_val = 1;
@@ -203,14 +185,6 @@ int delete_key(ht* table, char* key)
             if(strncmp(key, table->items[index].key, strlen(key)) == 0 && 
                 strlen(key) == strlen(table->items[index].key))
             {
-                if(table->items[index].key)
-                {
-                    free(table->items[index].key);
-                }
-                if(table->items[index].value)
-                {
-                    free(table->items[index].value);
-                }
                 table->items[index].key = NULL;
                 table->items[index].value = NULL;
                 table->length--;
@@ -275,18 +249,25 @@ int expand_size(ht* table)
             goto expand_error;
         }
         ht_item* old_items = table->items;
+        size_t old_size = table->size;
         table->items = new_items;
-        for (size_t i = 0; i < table->size ; i++)
+        table->size = new_size;
+        table->length = 0;
+        for (size_t i = 0; i < old_size ; i++)
         {
-            if ( old_items[i].key != NULL )
+            while ( old_items[i].key != NULL )
             {
                 if ( insert_key(table, old_items[i].key, old_items[i].value, 0) == -1 )
                 {
                     goto expand_error;
                 }
+                else
+                {
+                    old_items[i].key = NULL;
+                    old_items[i].value = NULL;
+                }
             }
         }
-        table->size = new_size;
         if (old_items != NULL)
         {
             free(old_items);

@@ -43,7 +43,8 @@ typedef struct hashtable {
 ht* create_ht();
 
 /**
- * @brief - This Function frees a hashtable and all items within it
+ * @brief - This Function frees a hashtable, interface must free the 
+ * keys and values however
  *  
  * @param table - A pointer to the hashtable being destroyed
  * 
