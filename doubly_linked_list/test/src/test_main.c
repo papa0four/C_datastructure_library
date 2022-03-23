@@ -76,8 +76,6 @@ int main (void)
     test_insert_at_idx(pass_fail);
     test_insert_before(pass_fail);
     test_insert_before_at_head (pass_fail);
-
-    fprintf(stderr, "tests ran: %ld\n", pass_fail->tests_ran);
     print_suite(pass_fail);
 
     delete_test_suite(pass_fail);
