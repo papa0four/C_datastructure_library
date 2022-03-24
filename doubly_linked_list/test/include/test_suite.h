@@ -43,4 +43,8 @@ void test_insert_before (pf_t * pass_fail);
 
 void test_insert_before_at_head (pf_t * pass_fail);
 
+void test_insert_after (pf_t * pass_fail);
+
+void test_insert_after_at_tail (pf_t * pass_fail);
+
 #endif

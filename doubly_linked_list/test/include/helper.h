@@ -18,6 +18,14 @@ size_t get_namelen (char * fname);
 
 int * gen_random (void);
 
+size_t gen_index (void);
+
+int check_previous_head (dll_t * dll, node_t * node);
+
+int check_previous_tail (dll_t * dll, node_t * node);
+
+int check_previous_in_list (node_t * inserted, node_t * new);
+
 void test_verbose_init (char * fname, dll_t * dll);
 
 dll_t * init_int_dll(void);
@@ -31,5 +39,9 @@ void test_verbose_at_idx (char * fname, dll_t * dll, int * data, size_t index);
 void test_verbose_before (char * fname, dll_t * dll, int * data, node_t * node);
 
 void test_verbose_before_at_head (char * fname, dll_t * dll, int * data, node_t * node);
+
+void test_verbose_after (char * fname, dll_t * dll, int * data, node_t * node);
+
+void test_verbose_after_at_tail (char * fname, dll_t * dll, int * data, node_t * node);
 
 #endif

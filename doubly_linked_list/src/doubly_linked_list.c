@@ -591,7 +591,7 @@ void insert_after (dll_t * dll, node_t * start_node, void * data, uint16_t node_
         return;
     }
 
-    if (0 == dll->memcmp_func(dll->head->data, start_node->data))
+    if (0 == dll->compare_func(dll->head->data, start_node->data))
     {
         node_t * next = dll->head->next;
         node_t * new_node = create_node(data, node_type);
