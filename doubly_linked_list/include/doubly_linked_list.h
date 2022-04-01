@@ -13,6 +13,8 @@
 #include <stdarg.h>
 #include "macros.h"
 
+void param_check (const char * fname, int line_no, int n_args, ...);
+
 // declaration of the linked list node struct container
 typedef struct dll_node node_t;
 // declaration of the linked list struct container

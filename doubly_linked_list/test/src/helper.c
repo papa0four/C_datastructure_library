@@ -287,3 +287,34 @@ void test_verbose_after_at_tail (char * fname, dll_t * dll, int * data, node_t *
         exit(1);
     }
 }
+
+void test_verbose_by_index(char * fname, dll_t * dll, node_t * found, size_t index)
+{
+    param_check(__FILE__, __LINE__, ARG_2, fname, dll);
+
+    if ((5 == dll->size)
+        && (NULL == found))
+    {
+        fprintf(stdout, "TEST 9: %s - ", fname);
+        fprintf(stdout, "Testing Find Node by Index\n\n");
+        fprintf(stdout, "Searching for node at index %ld:\n", index);
+        dll->print_func(dll);
+        fprintf(stdout, "\n");
+    }
+    else if ((5 == dll->size)
+            && (NULL != found))
+    {
+        fprintf(stdout, "Node found!\n\n");
+        found->pnode_func(found);
+        fprintf(stdout, "Node found validation:\n");
+        found->pnode_func(found->prev);
+        found->pnode_func(found->next);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+    
+}

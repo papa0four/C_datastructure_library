@@ -535,7 +535,7 @@ void test_insert_after_at_tail (pf_t * pass_fail)
         }
     }
 
-    int    * new            = gen_random();
+    int * new = gen_random();
     test_verbose_after_at_tail(test_name, dll, new, dll->tail);
     insert_after(dll, dll->tail, new, INT_T);
 
@@ -557,6 +557,74 @@ void test_insert_after_at_tail (pf_t * pass_fail)
         pass_fail->pf_flags[pass_fail->tests_ran - 1] = 1;
         pass_fail->num_passed++;
     }
+    else
+    {
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
+    }
+    
+    destroy_list(dll);
+}
+
+
+void test_find_by_index (pf_t * pass_fail)
+{
+    param_check(__FILE__, __LINE__, ARG_1, pass_fail);
+    
+    char * test_name    = "test_find_by_index\0";
+    size_t fname_sz     = get_namelen(test_name);
+    pass_fail->tests_ran++;
+
+    pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
+    if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not initialize test array index: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+    memcpy(pass_fail->tests[pass_fail->tests_ran - 1], test_name, fname_sz);
+
+    dll_t * dll = init_int_dll();
+    if (NULL == dll)
+    {
+        fprintf(stderr, "internal error, exiting...\n");
+        exit(1);
+    }
+
+    srand(time(NULL));
+    for (int i = 0; i < 5; i++)
+    {
+        usleep(SLEEP);
+        int * number = gen_random();
+        if (-1 == append(dll, number, INT_T))
+        {
+            pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
+            destroy_list(dll);
+            return;
+        }
+    }
+
+    size_t    index    = gen_index();
+    node_t  * find     = find_by_index(dll, index);
+
+    test_verbose_by_index(test_name, dll, NULL, index);
+    node_t * check = find_node(dll, (int *)find->data);
+    if ((NULL == find)
+        || (NULL == check)
+        || (5 != dll->size)
+        || (0 == check_previous_in_list(check->prev,find)))
+    {
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = 0;
+        pass_fail->num_failed++;
+        destroy_list(dll);
+    }
+    else if ((NULL != find)
+            && (1 == check_previous_in_list(check->prev, find)))
+    {
+        test_verbose_by_index(test_name, dll, find, index);
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = 1;
+        pass_fail->num_passed++;
+    }   
     else
     {
         pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;

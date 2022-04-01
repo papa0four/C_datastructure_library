@@ -44,4 +44,6 @@ void test_verbose_after (char * fname, dll_t * dll, int * data, node_t * node);
 
 void test_verbose_after_at_tail (char * fname, dll_t * dll, int * data, node_t * node);
 
+void test_verbose_by_index(char * fname, dll_t * dll, node_t * found, size_t index);
+
 #endif
