@@ -1,0 +1,815 @@
+//
+// Created by jsabs on 11/17/21.
+// updated by jsabs on 03/08/22.
+//
+#define _GNU_SOURCE
+
+#include "../include/print_list.h"
+#include "../include/print_node.h"
+#include "../include/compare_functions.h"
+#include "../include/delete_function.h"
+
+void param_check (const char * fname, int line_no, int n_args, ...)
+{
+    va_list var_list;
+    va_start(var_list, n_args);
+   
+    for (int i = 0; i < n_args; i++)
+    {
+        char * param = va_arg(var_list, char *);
+        CHECK((i + 1), fname, line_no, param);
+    }
+
+    va_end(var_list);
+}
+
+static cll_t * det_func (cll_t * cll, uint16_t flag)
+{
+    param_check(__FILE__, __LINE__, ARG_1, cll);
+
+    cll->memcmp_func  = cmp_address_t;
+    cll->delete_func  = delete_node;
+
+    switch (flag)
+    {
+        case (INT_T):
+        {
+            cll->compare_func   = cmp_int_t;
+            cll->print_func     = print_list_int;
+            break;
+        }
+
+        case (FLT_T):
+        {
+            cll->compare_func   = cmp_flt_t;
+            cll->print_func     = print_list_float;
+            break;
+        }
+
+        case (DBL_T):
+        {
+            cll->compare_func   = cmp_dbl_t;
+            cll->print_func     = print_list_double;
+            break;
+        }
+
+        case (STR_T):
+        {
+            cll->compare_func   = cmp_str_t;
+            cll->print_func     = print_list_str;
+            break;
+        }
+
+        case (UINT8_T):
+        {
+            cll->compare_func   = cmp_uint8_t;
+            cll->print_func     = print_list_uint8;
+            break;
+        }
+
+        case (INT8_T):
+        {
+            cll->compare_func   = cmp_int8_t;
+            cll->print_func     = print_list_int8;
+            break;
+        }
+
+        case (UINT16_T):
+        {
+            cll->compare_func   = cmp_uint16_t;
+            cll->print_func     = print_list_uint16;
+            break;
+        }
+
+        case (INT16_T):
+        {
+            cll->compare_func   = cmp_int16_t;
+            cll->print_func     = print_list_int16;
+            break;
+        }
+
+        case (UINT32_T):
+        {
+            cll->compare_func   = cmp_uint32_t;
+            cll->print_func     = print_list_uint32;
+            break;
+        }
+
+        case (UINT64_T):
+        {
+            cll->compare_func   = cmp_uint64_t;
+            cll->print_func     = print_list_uint64;
+            break;
+        }
+
+        case (INT64_T):
+        {
+            cll->compare_func   = cmp_int64_t;
+            cll->print_func     = print_list_int64;
+            break;
+        }
+
+        case (BOOL_T):
+        {
+            cll->compare_func   = cmp_bool_t;
+            cll->print_func     = print_list_bool;
+            break;
+        }
+
+        case (CUSTOM_T):
+        {
+            cll->compare_func   = cmp_address_t;
+            cll->print_func     = print_list_custom_default;
+            break;
+        }
+
+        case (USR_DEFINE_T):
+        {
+            cll->compare_func   = cmp_address_t;
+            break;
+        }
+
+        default:
+        {
+            cll = NULL;
+            break;
+        }
+    }
+
+    return cll;
+}
+
+cll_t * init (uint16_t node_type)
+{
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
+
+    cll_t * cll = calloc(1, sizeof(cll_t));
+    if (NULL == cll)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s: could not allocate list container: %s\n",
+                __func__, strerror(errno));
+        return NULL;
+    }
+
+    cll = det_func(cll, node_type);
+    if (NULL == cll)
+    {
+        fprintf(stderr, "%s(): error occurred setting up list: functions could not be determined\n",
+                        __func__);
+        return NULL;
+    }
+    
+
+    cll->head = NULL;
+    cll->tail = NULL;
+    cll->size = 0;
+
+    return cll;
+}
+
+static node_t * det_node_func (node_t * node, uint16_t flag)
+{
+    param_check(__FILE__, __LINE__, ARG_1, node);
+
+    switch (flag)
+    {
+        case (INT_T):
+        {
+            node->pnode_func     = print_int;
+            break;
+        }
+
+        case (FLT_T):
+        {
+            node->pnode_func     = print_float;
+            break;
+        }
+
+        case (DBL_T):
+        {
+            node->pnode_func     = print_double;
+            break;
+        }
+
+        case (STR_T):
+        {
+            node->pnode_func     = print_string;
+            break;
+        }
+
+        case (UINT8_T):
+        {
+            node->pnode_func     = print_uint8;
+            break;
+        }
+
+        case (INT8_T):
+        {
+            node->pnode_func     = print_int8;
+            break;
+        }
+
+        case (UINT16_T):
+        {
+            node->pnode_func     = print_uint16;
+            break;
+        }
+
+        case (INT16_T):
+        {
+            node->pnode_func     = print_int16;
+            break;
+        }
+
+        case (UINT32_T):
+        {
+            node->pnode_func     = print_uint32;
+            break;
+        }
+
+        case (UINT64_T):
+        {
+            node->pnode_func     = print_uint64;
+            break;
+        }
+
+        case (INT64_T):
+        {
+            node->pnode_func     = print_int64;
+            break;
+        }
+
+        case (BOOL_T):
+        {
+            node->pnode_func     = print_bool;
+            break;
+        }
+
+        case (CUSTOM_T):
+        {
+            node->pnode_func     = print_custom_default;
+            break;
+        }
+
+        case (USR_DEFINE_T):
+        {
+            break;
+        }
+
+        default:
+        {
+            node = NULL;
+            break;
+        }
+    }
+
+    return node;
+}
+
+/**
+ * @brief - allocates a node_t structure pointer to the heap, creating the new node to
+ *          insert into the singly linked list structure. NOTE: this is an internal
+ *          helper function that the user should not have to interact with, unless needed
+ *          for special cases.
+ * @param data - (void *) a generic pointer to the data to be stored within the node
+ * @param pnode_func_t - (print_n) a function pointer to allow the list to perform a formatted
+ *                       print on a specific node
+ * @return - (node_t *) ON SUCCESS: returns a heap allocated node structure to insert
+ *           into the singly linked list. There are two instances where create_node may fail.
+ *           If the data parameter pointer passed is NULL, errno will be set to EINVAL and
+ *           create_node will return a NULL pointer. The other instance that may occur is when the
+ *           call to calloc fails (system level failure) in which, errno will be set to ENOMEM
+ *           and create_node will return a NULL pointer.
+ */
+static node_t * create_node (void * data, uint16_t node_type)
+{
+    node_t * node = calloc(1, sizeof(node_t));
+    if (NULL == node)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s: could not allocate memory for new node: %s\n",
+                __func__, strerror(errno));
+        return NULL;
+    }
+
+    node = det_node_func(node, node_type);
+
+    node->index         = 0;
+    node->data          = data;
+    node->next          = NULL;
+
+    return node;
+}
+
+int append (cll_t * cll, void * node_data, uint16_t node_type)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, node_data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return -1;
+    }
+
+    node_t * new = NULL;
+    new = create_node(node_data, node_type);
+    if (NULL == new)
+    {
+        fprintf(stderr, "%s: could not create new node\n", __func__);
+        return -1;
+    }
+   
+    if (NULL == cll->head)
+    {
+        cll->head = new;
+        cll->tail = new;
+        new->next = new;
+        cll->size++;
+    }
+    else
+    {
+        new->index      = cll->size;
+        cll->tail->next = new;
+        cll->tail       = new;
+        new->next       = cll->head;
+        cll->size++;
+    }
+
+    return 0;
+}
+
+/**
+ * @brief - the intent of this helper function is to decrement all node indices without user interaction
+ *          when removing a node from the linked list container.
+ * @param cll - (cll_t *) a pointer to the current linked list storage container
+ * @param start_pos - (size_t) a numeric representation of the current node's index (n - 1) in the list
+ * @return - None. NOTE: if the linked list pointer parameter is NULL or the start_pos parameter passed
+ *           is greater than the current number of nodes stored within the linked list container, errno
+ *           will be set EINVAL, the appropriate error message will be displayed to the user, and the indices
+ *           will not be modified.
+ */
+static void decrement_index (cll_t * cll, size_t start_pos)
+{
+    if (start_pos > (cll->size - 1))
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: start_pos parameter cannot exceed the current number of list nodes: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    node_t * current = cll->head;
+    while (current)
+    {
+        if (current->index >= start_pos)
+        {
+            current->index--;
+        }
+
+        current = current->next;
+    }
+}
+
+/**
+ * @brief - the intent of this helper function is to increment all node indices without user interaction
+ *          when inserting a node into the linked list container while not calling the append function.
+ * @param cll - (cll_t *) a pointer to the current linked list storage container
+ * @param start_node - (node_t *) a pointer to the node, in which, itself and all subsequent nodes will have
+ *                      their indices incremented
+ * @return - None. NOTE: if any combination of the parameters passed are NULL, errno will be set EINVAL,
+ *           the appropriate error message will be displayed to the user, and the indices will not be modified.
+ */
+static void increment_index (cll_t * cll, node_t * start_node)
+{
+    if (NULL == start_node)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: start_node parameter passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    node_t * node = find_node(cll, start_node->data);
+    if (NULL == node)
+    {
+        fprintf(stderr, "%s: could not find specified node\n",
+                        __func__);
+        return;
+    }
+
+    while (node)
+    {
+        node->index++;
+        node = node->next;
+    }
+}
+
+void insert_new_head (cll_t * cll, const void * data, uint16_t node_type)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (NULL == cll->head)
+    {
+        int ret_val = append(cll, (void *)data, node_type);
+        if ((-1 == ret_val) || (1 == ret_val))
+        {
+            return;
+        }
+    }
+    else
+    {
+        node_t * old_head = cll->head;
+        node_t * new_head = create_node((void *)data, node_type);
+        if (NULL == new_head)
+        {
+            fprintf(stderr, "%s: could not create new node\n", __func__);
+            return;
+        }
+        cll->head         = new_head;
+        new_head->next    = old_head;
+        cll->tail->next   = new_head;
+        cll->size++;
+        increment_index(cll, old_head);
+    }
+}
+
+void insert_at_index (cll_t * cll, void * data, size_t index, uint16_t node_type)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+
+    if (index > cll->size - 1)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: index value passed cannot exceed list size: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if ((index > 0) && (NULL == cll->head))
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: current list is empty, insert at index 0 is the only"
+                                " permissible location: %s\n", __func__, strerror(errno));
+        return;
+    }
+
+    if (0 == index)
+    {
+        insert_new_head(cll, (const void *)data, node_type);
+        return;
+    }
+
+    node_t * current    = cll->head;
+    while (current)
+    {
+        if (index == current->next->index)
+        {
+            current = current->next;
+
+            node_t * new_node = create_node(data, node_type);
+            if (NULL == new_node)
+            {
+                fprintf(stderr, "%s: could not create new node to insert\n",
+                                __func__);
+                return;
+            }
+
+            new_node->index = current->index;
+            new_node->next  = current;
+            cll->size++;
+            increment_index(cll, current);
+            break;
+        }
+
+        current = current->next;
+    }
+
+    if (NULL == current)
+    {
+        fprintf(stderr, "%s: error occurred inserting new node\n", __func__);
+    }
+}
+
+void insert_before (cll_t * cll, node_t * start_node, void * data, uint16_t node_type)
+{
+    param_check(__FILE__, __LINE__, ARG_3, cll, start_node, data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (0 == cll->memcmp_func(cll->head, start_node))
+    {
+        insert_new_head(cll, data, node_type);
+    }
+    else
+    {
+        node_t * current = cll->head;
+        node_t * next    = NULL;
+        while (current)
+        {
+            if (0 == cll->memcmp_func(current->next, start_node))
+            {
+                next = current->next;
+                break;
+            }
+
+            current = current->next;
+        }
+
+        if (NULL == current)
+        {
+            fprintf(stderr, "%s: could not find node to insert before\n",
+                            __func__);
+            return;
+        }
+
+        node_t * new_node = create_node(data, node_type);
+        if (NULL == new_node)
+        {
+            fprintf(stderr, "%s: could not create node to be inserted\n",
+                    __func__);
+            return;
+        }
+
+        current->next   = new_node;
+        new_node->next  = next;
+        new_node->index = next->index;
+        increment_index(cll, next);
+        cll->size++;
+    }
+}
+
+void insert_after (cll_t * cll, node_t * start_node, void * data, uint16_t node_type)
+{
+    param_check(__FILE__, __LINE__, ARG_3, cll, start_node, data);
+
+    if (node_type > USR_DEFINE_T)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s(): type flag must be between 0 - 12: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (0 == cll->compare_func(cll->head->data, start_node->data))
+    {
+        node_t * next = cll->head->next;
+        node_t * new_node = create_node(data, node_type);
+        if (NULL == new_node)
+        {
+            fprintf(stderr, "%s: could not create new node to be inserted\n",
+                            __func__);
+            return;
+        }
+        cll->head->next = new_node;
+        new_node->next  = next;
+        new_node->index = next->index;
+        increment_index(cll, next);
+        cll->size++;
+    }
+    else if (0 == cll->compare_func(cll->tail->data, start_node->data))
+    {
+        int ret_val = append(cll, data, node_type);
+        if ((-1 == ret_val) || (1 == ret_val))
+        {
+            fprintf(stderr, "%s: could not insert new node\n",
+                            __func__);
+            return;
+        }
+    }
+    else
+    {
+        node_t * find = find_node(cll, start_node->data);
+        if (NULL == find)
+        {
+            fprintf(stderr, "%s: could not find desired node to insert after\n",
+                            __func__);
+            return;
+        }
+        node_t * next = find->next;
+
+        node_t * new_node = create_node(data, node_type);
+        if (NULL == new_node)
+        {
+            fprintf(stderr, "%s: could not create new node to be inserted\n",
+                            __func__);
+            return;
+        }
+
+        find->next = new_node;
+        new_node->next  = next;
+        new_node->index = next->index;
+        increment_index(cll, next);
+        cll->size++;
+    }
+}
+
+node_t * find_by_index (cll_t * cll, size_t index)
+{
+    if (NULL == cll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
+
+    if (NULL == cll->head)
+    {
+        fprintf(stderr, "%s: current list container is empty\n",
+                        __func__);
+        return NULL;
+    }
+
+    if (index > cll->size - 1)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: index value passed cannot exceed list size: %s\n",
+                        __func__, strerror(errno));
+        return NULL;
+    }
+
+    node_t * current = cll->head;
+    while (current)
+    {
+        if (index == current->index)
+        {
+            break;
+        }
+
+        current = current->next;
+    }
+
+    return current;
+}
+
+node_t * find_node (cll_t * cll, const void * data)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+
+    node_t * current = cll->head;
+
+    while (current)
+    {
+        if (0 == cll->compare_func(current->data, data))
+        {
+            break;
+        }
+
+        current = current->next;
+    }
+
+    if (NULL == current)
+    {
+        fprintf(stderr, "%s(): could not find specified node in list\n", __func__);
+    }
+
+    return current;
+}
+
+size_t get_list_size (cll_t * cll)
+{
+    if (NULL == cll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list container passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return 0;
+    }
+    return cll->size;
+}
+
+void remove_node (cll_t * cll, const void * data)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+
+    if (0 == cll->compare_func(cll->head->data, data))
+    {
+        node_t * old_head = cll->head;
+        cll->head         = old_head->next;
+        cll->delete_func(old_head);
+        cll->size--;
+        decrement_index(cll, 0);
+    }
+    else if (0 == cll->compare_func(cll->tail->data, data))
+    {
+        node_t * current = cll->head;
+        node_t * temp    = NULL;
+
+        while (current)
+        {
+            if (current->next == cll->tail)
+            {
+                temp = current->next;
+                cll->delete_func(temp);
+                current->next   = NULL;
+                cll->tail       = current;
+                cll->size--;
+                break;
+            }
+
+            current = current->next;
+        }
+    }
+    else
+    {
+        node_t * current = cll->head;
+        node_t * temp    = NULL;
+        while (current->next)
+        {
+            if (0 == cll->compare_func(current->next->data, data))
+            {
+                temp = current->next;
+                size_t index        = temp->index;
+                current->next       = current->next->next;
+                cll->delete_func(temp);
+                cll->size--;
+                decrement_index(cll, index);
+                return;
+            }
+
+            current = current->next;
+        }
+
+        if ((0 != cll->compare_func(current->data, data)))
+        {
+            fprintf(stderr, "%s: data to remove is not within current list\n",
+                    __func__);
+            return;
+        }
+    }
+}
+
+void destroy_list (cll_t * cll)
+{
+    if (NULL == cll)
+    {
+        errno = EINVAL;
+        fprintf(stderr, "%s: list passed is NULL: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    if (NULL == cll->head)
+    {
+        CLEAN(cll);
+        return;
+    }
+
+    node_t * current    = cll->head;
+    node_t * temp       = NULL;
+    while (current)
+    {
+        if (cll->head == current->next)
+        {
+            cll->delete_func(current->data);
+            cll->delete_func(current);
+            break;
+        }
+        temp    = current;
+        current = current->next;
+        cll->delete_func(temp->data);
+        cll->delete_func(temp);
+    }
+    
+    cll->head           = NULL;
+    cll->tail           = NULL;
+    cll->memcmp_func    = NULL;
+    cll->compare_func   = NULL;
+    cll->delete_func    = NULL;
+    cll->print_func     = NULL;
+    cll->size           = 0;
+    CLEAN(cll);
+}
+
+/*** end singly_linked_list.c ***/
