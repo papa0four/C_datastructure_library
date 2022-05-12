@@ -132,5 +132,31 @@ void test_verbose_append (char * fname, cll_t * cll)
     }
 }
 
+void test_verbose_new_head (char * fname, cll_t * cll, int * data)
+{
+    param_check(__FILE__, __LINE__, ARG_2, fname, cll);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 3: %s - ", fname);
+        fprintf(stdout, "Testing Inserting New Head To List\n\n");
+        fprintf(stdout, "Inserting %d into Index 0:\n", *data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (6 == cll->size)
+    {
+        fprintf(stdout, "After Insertion:\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "size: %ld\n", cll->size);
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
 /*** end helper.c ***/
 

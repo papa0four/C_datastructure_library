@@ -368,7 +368,7 @@ static void decrement_index (cll_t * cll, size_t start_pos)
     }
 
     node_t * current = cll->head;
-    while (current)
+    while (current->next != cll->head)
     {
         if (current->index >= start_pos)
         {
@@ -410,6 +410,11 @@ static void increment_index (cll_t * cll, node_t * start_node)
     {
         node->index++;
         node = node->next;
+        if (cll->head == node->next)
+        {
+            node->index++;
+            break;
+        }
     }
 }
 
@@ -442,8 +447,8 @@ void insert_new_head (cll_t * cll, const void * data, uint16_t node_type)
             fprintf(stderr, "%s: could not create new node\n", __func__);
             return;
         }
+        new_head->next    = cll->head;
         cll->head         = new_head;
-        new_head->next    = old_head;
         cll->tail->next   = new_head;
         cll->size++;
         increment_index(cll, old_head);

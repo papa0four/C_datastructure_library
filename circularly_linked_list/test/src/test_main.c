@@ -73,6 +73,7 @@ int main (void)
     /* run test suite */
     test_init(pass_fail);
     test_append(pass_fail);
+    test_add_head(pass_fail);
 
     /* print test suite results */
     print_suite(pass_fail);
