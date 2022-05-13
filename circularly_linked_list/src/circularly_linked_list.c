@@ -433,7 +433,7 @@ void insert_new_head (cll_t * cll, const void * data, uint16_t node_type)
     if (NULL == cll->head)
     {
         int ret_val = append(cll, (void *)data, node_type);
-        if ((-1 == ret_val) || (1 == ret_val))
+        if (-1 == ret_val)
         {
             return;
         }
@@ -449,7 +449,7 @@ void insert_new_head (cll_t * cll, const void * data, uint16_t node_type)
         }
         new_head->next    = cll->head;
         cll->head         = new_head;
-        cll->tail->next   = new_head;
+        cll->tail->next   = cll->head;
         cll->size++;
         increment_index(cll, old_head);
     }
