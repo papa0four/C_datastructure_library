@@ -172,5 +172,30 @@ void test_verbose_at_idx (char * fname, cll_t * cll, int * data, size_t index)
     }
 }
 
+void test_verbose_before (char * fname, cll_t * cll, int * data, node_t * node)
+{
+    param_check(__FILE__, __LINE__, ARG_3, fname, cll, data, node);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 5: %s - ", fname);
+        fprintf(stdout, "Testing Insert Before Specified Node\n\n");
+        fprintf(stdout, "Inserting %d before node %d:\n", *data, *(int *)node->data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (6 == cll->size)
+    {
+        fprintf(stdout, "After Insertion:\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Ocurred, exiting...\n");
+        exit(1);
+    }
+}
+
 /*** end helper.c ***/
 

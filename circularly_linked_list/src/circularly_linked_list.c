@@ -258,7 +258,7 @@ void insert_before (cll_t * cll, node_t * start_node, void * data, uint16_t node
     {
         node_t * current = cll->head;
         node_t * next    = NULL;
-        while (current)
+        while (cll->head != current->next)
         {
             if (0 == cll->memcmp_func(current->next, start_node))
             {
