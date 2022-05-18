@@ -8,6 +8,8 @@
 #include "../include/print_node.h"
 #include "../include/compare_functions.h"
 #include "../include/delete_function.h"
+#include "../include/mod_index.h"
+#include "../include/detection.h"
 
 void param_check (const char * fname, int line_no, int n_args, ...)
 {
@@ -203,11 +205,13 @@ void insert_at_index (cll_t * cll, void * data, size_t index, uint16_t node_type
         return;
     }
 
-    node_t * current    = cll->head;
-    while (current)
+    node_t * current = cll->head;
+    node_t * prev    = NULL;
+    while (cll->head != current->next)
     {
         if (index == current->next->index)
         {
+            prev    = current;
             current = current->next;
 
             node_t * new_node = create_node(data, node_type);
@@ -217,7 +221,7 @@ void insert_at_index (cll_t * cll, void * data, size_t index, uint16_t node_type
                                 __func__);
                 return;
             }
-
+            prev->next   = new_node;
             new_node->index = current->index;
             new_node->next  = current;
             cll->size++;
@@ -379,7 +383,7 @@ node_t * find_by_index (cll_t * cll, size_t index)
     }
 
     node_t * current = cll->head;
-    while (current)
+    while (cll->head != current->next)
     {
         if (index == current->index)
         {

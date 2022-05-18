@@ -24,8 +24,6 @@ int check_previous_head (cll_t * cll, node_t * node);
 
 int check_previous_tail (cll_t * cll, node_t * node);
 
-int check_previous_in_list (node_t * inserted, node_t * new);
-
 void test_verbose_init (char * fname, cll_t * cll);
 
 cll_t * init_int_cll(void);

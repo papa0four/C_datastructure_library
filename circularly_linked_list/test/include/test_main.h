@@ -6,6 +6,7 @@
 #include "../../include/print_node.h"
 #include "../../include/compare_functions.h"
 #include "../../include/delete_function.h"
+#include "test_suite.h"
 
 #define NUM_TESTS 10
 

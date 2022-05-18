@@ -79,17 +79,6 @@ int check_previous_tail (cll_t * cll, node_t * node)
     return 0;
 }
 
-int check_previous_in_list (node_t * previous, node_t * new)
-{
-    param_check(__FILE__, __LINE__, ARG_2, previous, new);
-
-    //{
-    //    return 1;
-    //
-
-    return 0;
-}
-
 void test_verbose_init (char * fname, cll_t * cll)
 {
     param_check(__FILE__, __LINE__, ARG_2, fname, cll);
@@ -153,6 +142,31 @@ void test_verbose_new_head (char * fname, cll_t * cll, int * data)
     else
     {
         fprintf(stderr, "size: %ld\n", cll->size);
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_at_idx (char * fname, cll_t * cll, int * data, size_t index)
+{
+    param_check(__FILE__, __LINE__, ARG_3, fname, cll, data);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 4: %s - ", fname);
+        fprintf(stdout, "Testing Insert At Specified Index\n\n");
+        fprintf(stdout, "Inserting %d into Index %ld:\n", *data, index);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (6 == cll->size)
+    {
+        fprintf(stdout, "After Insertion:\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
         fprintf(stderr, "Testing Error Occurred, exiting...\n");
         exit(1);
     }
