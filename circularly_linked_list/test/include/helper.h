@@ -20,10 +20,6 @@ int * gen_random (void);
 
 size_t gen_index (void);
 
-int check_previous_head (cll_t * cll, node_t * node);
-
-int check_previous_tail (cll_t * cll, node_t * node);
-
 void test_verbose_init (char * fname, cll_t * cll);
 
 cll_t * init_int_cll(void);

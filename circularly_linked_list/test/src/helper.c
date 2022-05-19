@@ -32,53 +32,6 @@ size_t gen_index ()
     return result;
 }
 
-
-int check_previous_head (cll_t * cll, node_t * node)
-{
-    param_check(__FILE__, __LINE__, ARG_2, cll, node);
-
-    if (node == cll->head)
-    {
-        return 1;
-    }
-    
-    return 0;
-}
-
-int check_previous_tail (cll_t * cll, node_t * node)
-{
-    param_check(__FILE__, __LINE__, ARG_2, cll, node);
-
-    size_t len = get_list_size(cll);
-    if (1 == len)
-    {
-        int ret = check_previous_head(cll, node);
-        if (1 == ret)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-   
-    if (len > 1)
-    {
-        node_t * find = find_by_index(cll, (len - 2));
-        if (NULL == find)
-        {
-            return 0;
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 void test_verbose_init (char * fname, cll_t * cll)
 {
     param_check(__FILE__, __LINE__, ARG_2, fname, cll);
@@ -193,6 +146,56 @@ void test_verbose_before (char * fname, cll_t * cll, int * data, node_t * node)
     else
     {
         fprintf(stderr, "Testing Error Ocurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_before_at_head (char * fname, cll_t * cll, int * data, node_t * node)
+{
+    param_check(__FILE__, __LINE__, ARG_3, fname, cll, data, node);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 6: %s - ", fname);
+        fprintf(stdout, "Testing Insert Before, Head Node\n\n");
+        fprintf(stdout, "Inserting %d before node %d:\n", *data, *(int *)node->data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (6 == cll->size)
+    {
+        fprintf(stdout, "After Insertion:\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_after (char * fname, cll_t * cll, int * data, node_t * node)
+{
+    param_check(__FILE__, __LINE__, ARG_3, fname, cll, data, node);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 7: %s - ", fname);
+        fprintf(stdout, "Testing Insert After Specified Node\n\n");
+        fprintf(stdout, "Inserting %d after node %d:\n", *data, *(int *)node->data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (6 == cll->size)
+    {
+        fprintf(stdout, "After Insertion:\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
         exit(1);
     }
 }

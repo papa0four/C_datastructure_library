@@ -76,6 +76,8 @@ int main (void)
     test_add_head(pass_fail);
     test_insert_at_idx(pass_fail);
     test_insert_before(pass_fail);
+    test_insert_before_at_head(pass_fail);
+    test_insert_after(pass_fail);
 
     /* print test suite results */
     print_suite(pass_fail);

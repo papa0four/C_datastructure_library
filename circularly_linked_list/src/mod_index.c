@@ -43,12 +43,11 @@ void increment_index (cll_t * cll, node_t * start_node)
     while (node)
     {
         node->index++;
-        node = node->next;
         if (cll->head == node->next)
         {
-            node->index++;
             break;
         }
+        node = node->next;
     }
 }
 
