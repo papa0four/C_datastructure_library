@@ -78,6 +78,7 @@ int main (void)
     test_insert_before(pass_fail);
     test_insert_before_at_head(pass_fail);
     test_insert_after(pass_fail);
+    test_insert_after_at_tail(pass_fail);
 
     /* print test suite results */
     print_suite(pass_fail);

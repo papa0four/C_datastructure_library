@@ -200,5 +200,30 @@ void test_verbose_after (char * fname, cll_t * cll, int * data, node_t * node)
     }
 }
 
+void test_verbose_after_at_tail (char * fname, cll_t * cll, int * data, node_t * node)
+{
+    param_check(__FILE__, __LINE__, ARG_3, fname, cll, data, node);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 8: %s - ", fname);
+        fprintf(stdout, "Testing Insert After Tail\n\n");
+        fprintf(stdout, "Inserting %d after tail node %d:\n", *data, *(int *)node->data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (6 == cll->size)
+    {
+        fprintf(stdout, "After Insertion:\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
 /*** end helper.c ***/
 
