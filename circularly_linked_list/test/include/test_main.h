@@ -8,8 +8,6 @@
 #include "../../include/delete_function.h"
 #include "test_suite.h"
 
-#define NUM_TESTS 10
-
 pf_t * init_suite();
 
 #endif

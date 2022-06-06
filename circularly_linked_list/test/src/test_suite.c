@@ -86,6 +86,24 @@ void test_append (pf_t * pass_fail)
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
 
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
     {
@@ -143,6 +161,25 @@ void test_add_head (pf_t * pass_fail)
     char * test_name    = "test_insert_new_head\0";
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
+
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
 
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
@@ -210,6 +247,24 @@ void test_insert_at_idx (pf_t * pass_fail)
     char * test_name    = "test_insert_at_index\0";
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
+
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
 
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
@@ -280,6 +335,24 @@ void test_insert_before (pf_t * pass_fail)
     char * test_name    = "test_insert_before\0";
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
+
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
 
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
@@ -357,6 +430,24 @@ void test_insert_before_at_head (pf_t * pass_fail)
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
 
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
     {
@@ -424,6 +515,24 @@ void test_insert_after (pf_t * pass_fail)
     char * test_name    = "test_insert_after\0";
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
+
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
 
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
@@ -501,6 +610,24 @@ void test_insert_after_at_tail (pf_t * pass_fail)
     size_t fname_sz     = get_namelen(test_name);
     pass_fail->tests_ran++;
 
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
     pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
     if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
     {
@@ -559,6 +686,178 @@ void test_insert_after_at_tail (pf_t * pass_fail)
         pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
     }
     
+    destroy_list(cll);
+}
+
+void test_find_by_index (pf_t * pass_fail)
+{
+    param_check(__FILE__, __LINE__, ARG_1, pass_fail);
+
+    char * test_name    = "test_find_by_index\0";
+    size_t fname_sz     = get_namelen(test_name);
+    pass_fail->tests_ran++;
+
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
+    if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not initialize test array index: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+    memcpy(pass_fail->tests[pass_fail->tests_ran - 1], test_name, fname_sz);
+
+    cll_t * cll = init_int_cll();
+    if (NULL == cll)
+    {
+        fprintf(stderr, "internal error, exiting...\n");
+        exit(1);
+    }
+
+    srand(time(NULL));
+    for (int i = 0; i < 5; i++)
+    {
+        usleep(SLEEP);
+        int * number = gen_random();
+        if (-1 == append(cll, number, INT_T))
+        {
+            pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
+            destroy_list(cll);
+            return;
+        }
+    }
+
+    size_t    index   = gen_index();
+    node_t *  find    = find_by_index(cll, index);
+    node_t *  prev    = find_by_index(cll, find->index - 1);
+
+    test_verbose_by_index(test_name, cll, NULL, index);
+    node_t * check = find_node(cll, (int *)find->data);
+    if ((NULL == check)
+        || (NULL == check)
+        || (5 != cll->size)
+        || (-1 == cll->compare_func(prev->next->data, check->data)))
+    {
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = 0;
+        pass_fail->num_failed++;
+        destroy_list(cll);
+    }
+    else if ((NULL != find)
+            && (0 == cll->compare_func(find->data, check->data))
+            && (0 == cll->compare_func(prev->next->data, check->data)))
+    {
+        test_verbose_by_index(test_name, cll, find, index);
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = 1;
+        pass_fail->num_passed++;
+    }
+    else
+    {
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
+    }
+
+    destroy_list(cll);
+}
+
+void test_delete_node (pf_t * pass_fail)
+{
+     param_check(__FILE__, __LINE__, ARG_1, pass_fail);
+
+    char * test_name    = "test_delete_node\0";
+    size_t fname_sz     = get_namelen(test_name);
+    pass_fail->tests_ran++;
+
+    pass_fail->tests = realloc(pass_fail->tests, (pass_fail->tests_ran * sizeof(char *)));
+    if (NULL == pass_fail->tests)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize tests array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->pf_flags = realloc(pass_fail->pf_flags, (pass_fail->tests_ran * sizeof(ssize_t)));
+    if (NULL == pass_fail->pf_flags)
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not resize flags array: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+
+    pass_fail->tests[pass_fail->tests_ran - 1] = calloc(fname_sz + 1, sizeof(char));
+    if (NULL == pass_fail->tests[pass_fail->tests_ran - 1])
+    {
+        errno = ENOMEM;
+        fprintf(stderr, "%s(): could not initialize test array index: %s\n",
+                        __func__, strerror(errno));
+        return;
+    }
+    memcpy(pass_fail->tests[pass_fail->tests_ran - 1], test_name, fname_sz);
+
+    cll_t * cll = init_int_cll();
+    if (NULL == cll)
+    {
+        fprintf(stderr, "internal error, exiting...\n");
+        exit(1);
+    }
+
+    srand(time(NULL));
+    for (int i = 0; i < 5; i++)
+    {
+        usleep(SLEEP);
+        int * number = gen_random();
+        if (-1 == append(cll, number, INT_T))
+        {
+            pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
+            destroy_list(cll);
+            return;
+        }
+    }
+
+    size_t    index = gen_index();
+    node_t *  find  = find_by_index(cll, index);
+    test_verbose_delete_node(test_name, cll, NULL, (int *)find->data);
+
+    node_t * prev = find_by_index(cll, find->index - 1);
+    node_t * next = find->next;
+    remove_node(cll, find);
+    if (5 == cll->size)
+    {
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = 0;
+        pass_fail->num_failed++;
+        destroy_list(cll);
+    }
+    else if ((4 == cll->size)
+            && (0 == cll->compare_func(prev->next->data, next->data)))
+    {
+        test_verbose_delete_node(test_name, cll, find, (int *)find->data);
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = 1;
+        pass_fail->num_passed++;
+        destroy_list(cll);
+    }
+    else
+    {
+        pass_fail->pf_flags[pass_fail->tests_ran - 1] = -1;
+    }
+
     destroy_list(cll);
 }
 

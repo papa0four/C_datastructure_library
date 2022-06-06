@@ -14,7 +14,7 @@ pf_t * init_suite ()
         return NULL;
     }
 
-    pass_fail->tests = calloc(NUM_TESTS, sizeof(char *));
+    pass_fail->tests = calloc(1, sizeof(char *));
     if (NULL == pass_fail->tests)
     {
         errno = ENOMEM;
@@ -24,7 +24,7 @@ pf_t * init_suite ()
         return NULL;
     }
 
-    pass_fail->pf_flags = calloc(NUM_TESTS, sizeof(ssize_t));
+    pass_fail->pf_flags = calloc(1, sizeof(ssize_t));
     if (NULL == pass_fail->pf_flags)
     {
         errno = ENOMEM;
@@ -35,7 +35,7 @@ pf_t * init_suite ()
         return NULL;
     }
 
-    pass_fail->total        = NUM_TESTS;
+    pass_fail->total        = 0;
     pass_fail->tests_ran    = 0;
     pass_fail->num_failed   = 0;
     pass_fail->num_passed   = 0;
@@ -71,14 +71,19 @@ int main (void)
     }
 
     /* run test suite */
-    test_init(pass_fail);
-    test_append(pass_fail);
-    test_add_head(pass_fail);
-    test_insert_at_idx(pass_fail);
-    test_insert_before(pass_fail);
-    test_insert_before_at_head(pass_fail);
-    test_insert_after(pass_fail);
-    test_insert_after_at_tail(pass_fail);
+//    test_init(pass_fail);
+//    test_append(pass_fail);
+//    test_add_head(pass_fail);
+//    test_insert_at_idx(pass_fail);
+//    test_insert_before(pass_fail);
+//    test_insert_before_at_head(pass_fail);
+//    test_insert_after(pass_fail);
+//    test_insert_after_at_tail(pass_fail);
+//    test_find_by_index(pass_fail);
+    test_delete_node(pass_fail);
+
+    /* update total tests ran */
+    pass_fail->total = pass_fail->tests_ran;  
 
     /* print test suite results */
     print_suite(pass_fail);

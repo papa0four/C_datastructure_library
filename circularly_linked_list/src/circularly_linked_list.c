@@ -2,6 +2,7 @@
 // Created by jsabs on 11/17/21.
 // updated by jsabs on 03/08/22.
 //
+#include <stddef.h>
 #define _GNU_SOURCE
 
 #include "../include/print_list.h"
@@ -388,7 +389,7 @@ node_t * find_node (cll_t * cll, const void * data)
 
     node_t * current = cll->head;
 
-    while (current)
+    while (cll->head != current->next)
     {
         if (0 == cll->compare_func(current->data, data))
         {
@@ -424,6 +425,7 @@ void remove_node (cll_t * cll, const void * data)
 
     if (0 == cll->compare_func(cll->head->data, data))
     {
+        fprintf(stdout, "in head check src\n");
         node_t * old_head = cll->head;
         cll->head         = old_head->next;
         cll->delete_func(old_head);
@@ -432,6 +434,7 @@ void remove_node (cll_t * cll, const void * data)
     }
     else if (0 == cll->compare_func(cll->tail->data, data))
     {
+        fprintf(stdout, "in tail check src\n");
         node_t * current = cll->head;
         node_t * temp    = NULL;
 
@@ -453,28 +456,30 @@ void remove_node (cll_t * cll, const void * data)
     else
     {
         node_t * current = cll->head;
+        node_t * prev    = NULL;
         node_t * temp    = NULL;
-        while (current->next)
+
+        while (cll->head != current->next)
         {
-            if (0 == cll->compare_func(current->next->data, data))
+            prev = current;
+            if (0 == cll->compare_func(current->data, data))
             {
-                temp = current->next;
-                size_t index        = temp->index;
-                current->next       = current->next->next;
+                temp            = current;
+                current         = current->next;
+                size_t index    = temp->index;
+                prev->next      = current;
                 cll->delete_func(temp);
                 cll->size--;
                 decrement_index(cll, index);
                 return;
             }
-
             current = current->next;
         }
 
-        if ((0 != cll->compare_func(current->data, data)))
+        if (-1 == cll->compare_func(current->data, data))
         {
-            fprintf(stderr, "%s: data to remove is not within current list\n",
+            fprintf(stderr, "%s(): data to remoce is not within current list\n",
                     __func__);
-            return;
         }
     }
 }

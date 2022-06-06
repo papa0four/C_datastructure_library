@@ -38,6 +38,8 @@ void test_verbose_after (char * fname, cll_t * cll, int * data, node_t * node);
 
 void test_verbose_after_at_tail (char * fname, cll_t * cll, int * data, node_t * node);
 
-void test_verbose_by_index(char * fname, cll_t * cll, node_t * found, size_t index);
+void test_verbose_by_index (char * fname, cll_t * cll, node_t * found, size_t index);
+
+void test_verbose_delete_node (char * fname, cll_t * cll, node_t * node, int * data);
 
 #endif

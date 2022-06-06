@@ -225,5 +225,69 @@ void test_verbose_after_at_tail (char * fname, cll_t * cll, int * data, node_t *
     }
 }
 
+void test_verbose_by_index (char * fname, cll_t * cll, node_t * found, size_t index)
+{
+    param_check(__FILE__, __LINE__, ARG_2, fname, cll);
+
+    if ((5 == cll->size)
+        && (NULL == found))
+    {
+        fprintf(stdout, "TEST 9 : %s - ", fname);
+        fprintf(stdout, "Testing Find Node by Index\n\n");
+        fprintf(stdout, "Searching for node at index %ld:\n", index);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if ((5 == cll->size)
+            && (NULL != found))
+    {
+        node_t * prev = find_by_index(cll, found->index - 1);
+        if (NULL == prev)
+        {
+            fprintf(stderr, "Internal Structure Error, exiting...\n");
+            exit(1);
+        }
+
+        fprintf(stdout, "Node found!\n\n");
+        found->pnode_func(found);
+        fprintf(stdout, "Node found validation:\n");
+        prev->pnode_func(prev);
+        prev->pnode_func(prev->next);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_delete_node (char * fname, cll_t * cll, node_t * node, int * data)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+
+    if ((5 == cll->size)
+        && (NULL == node))
+    {
+        fprintf(stdout, "TEST 10 : %s - ", fname);
+        fprintf(stdout, "Testing Delete Node From List\n\n");
+        fprintf(stdout, "Deleting node %d from list:\n", *(int *)data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if ((4 == cll->size)
+            && (NULL != node))
+    {
+        fprintf(stdout, "Node successfully removed from list\n\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
 /*** end helper.c ***/
 
