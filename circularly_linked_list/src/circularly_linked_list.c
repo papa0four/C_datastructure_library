@@ -450,6 +450,7 @@ void remove_head (cll_t * cll)
 
         current->next = prev->next;
         cll->head     = current->next;
+        cll->delete_func(prev->data);
         cll->delete_func(prev);
         decrement_index(cll, cll->head->index);
         cll->size--;
@@ -486,6 +487,7 @@ void remove_tail (cll_t * cll)
     prev->next = current->next;
     cll->tail  = prev;
     cll->tail  = prev->next;
+    cll->delete_func(current->data);
     cll->delete_func(current);
     cll->size--;    
 }
