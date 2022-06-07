@@ -71,15 +71,16 @@ int main (void)
     }
 
     /* run test suite */
-//    test_init(pass_fail);
-//    test_append(pass_fail);
-//    test_add_head(pass_fail);
-//    test_insert_at_idx(pass_fail);
-//    test_insert_before(pass_fail);
-//    test_insert_before_at_head(pass_fail);
-//    test_insert_after(pass_fail);
-//    test_insert_after_at_tail(pass_fail);
-//    test_find_by_index(pass_fail);
+    test_init(pass_fail);
+    test_append(pass_fail);
+    test_add_head(pass_fail);
+    test_insert_at_idx(pass_fail);
+    test_insert_before(pass_fail);
+    test_insert_before_at_head(pass_fail);
+    test_insert_after(pass_fail);
+    test_insert_after_at_tail(pass_fail);
+    test_find_by_index(pass_fail);
+    test_find_by_data(pass_fail);
     test_delete_node(pass_fail);
 
     /* update total tests ran */

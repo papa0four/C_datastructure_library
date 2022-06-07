@@ -419,68 +419,125 @@ size_t get_list_size (cll_t * cll)
     return cll->size;
 }
 
-void remove_node (cll_t * cll, const void * data)
+void remove_head (cll_t * cll)
 {
-    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+    param_check(__FILE__, __LINE__, ARG_1, cll);
 
-    if (0 == cll->compare_func(cll->head->data, data))
+    node_t * prev     = cll->head;
+    node_t * current  = cll->head;
+
+    if (NULL == cll->head)
     {
-        fprintf(stdout, "in head check src\n");
-        node_t * old_head = cll->head;
-        cll->head         = old_head->next;
-        cll->delete_func(old_head);
-        cll->size--;
-        decrement_index(cll, 0);
+        fprintf(stderr, "%s(): Current list is empty\n", __func__);
+        return;
     }
-    else if (0 == cll->compare_func(cll->tail->data, data))
+
+    /* if only one node exists */
+    if ((1 == cll->size)
+        || (prev->next == prev))
     {
-        fprintf(stdout, "in tail check src\n");
-        node_t * current = cll->head;
-        node_t * temp    = NULL;
-
-        while (current)
-        {
-            if (current->next == cll->tail)
-            {
-                temp = current->next;
-                cll->delete_func(temp);
-                current->next   = NULL;
-                cll->tail       = current;
-                cll->size--;
-                break;
-            }
-
-            current = current->next;
-        }
+        cll->delete_func(cll->head);
+        cll->head = NULL;
+        cll->tail = NULL;
+        cll->size--;
     }
     else
     {
-        node_t * current = cll->head;
-        node_t * prev    = NULL;
-        node_t * temp    = NULL;
-
         while (cll->head != current->next)
         {
-            prev = current;
-            if (0 == cll->compare_func(current->data, data))
-            {
-                temp            = current;
-                current         = current->next;
-                size_t index    = temp->index;
-                prev->next      = current;
-                cll->delete_func(temp);
-                cll->size--;
-                decrement_index(cll, index);
-                return;
-            }
             current = current->next;
         }
 
-        if (-1 == cll->compare_func(current->data, data))
+        current->next = prev->next;
+        cll->head     = current->next;
+        cll->delete_func(prev);
+        decrement_index(cll, cll->head->index);
+        cll->size--;
+    }
+}
+
+void remove_tail (cll_t * cll)
+{
+    param_check(__FILE__, __LINE__, ARG_1, cll);
+    
+    node_t * current = cll->head;
+    node_t * prev    = NULL;
+
+    if ((1 == cll->size)
+        || (NULL == cll->head))
+    {
+        fprintf(stderr, "%s(): Current list is empty\n", __func__);
+        return;
+    }
+
+    /* if only one node exists */
+    if (current->next == current)
+    {
+        remove_head(cll);
+        return;
+    }
+
+    while (cll->head != current->next)
+    {
+        prev      = current;
+        current   = current->next;
+    }
+
+    prev->next = current->next;
+    cll->tail  = prev;
+    cll->tail  = prev->next;
+    cll->delete_func(current);
+    cll->size--;    
+}
+
+void remove_node (cll_t * cll, const void * data)
+{
+    param_check(__FILE__, __LINE__, ARG_2, cll, data);
+    
+    if (NULL == cll->head)
+    {
+        fprintf(stderr, "%s(): Current list is empty\n", __func__);
+        return;
+    }
+
+    /* check if node exists in list */
+    node_t * find = find_node(cll, data);
+    if (NULL == find)
+    {
+        fprintf(stderr, "%s(): Data passed does not exist in list\n",
+                        __func__);
+    }
+    else if (0 == cll->compare_func(data, cll->head->data))
+    {
+        remove_head(cll);
+    }
+    else if (0 == cll->compare_func(data, cll->tail->data))
+    {
+        remove_tail(cll);
+    }
+    else
+    {
+        node_t * find = find_node(cll, data);
+        if (NULL == find)
         {
-            fprintf(stderr, "%s(): data to remoce is not within current list\n",
-                    __func__);
+            fprintf(stderr, "%s(): Data not found in current list\n", __func__);
+            return;
         }
+
+        node_t * prev = find_by_index(cll, find->index - 1);
+        if (NULL == prev)
+        {
+            fprintf(stderr, "%s(): Could not find previous node\n", __func__);
+            return;
+        }
+
+        node_t * next   = prev->next->next;
+        size_t   index  = prev->index + 1;
+        prev->next      = next;
+        cll->delete_func(find->data);
+        cll->delete_func(find);
+        decrement_index(cll, index);
+        cll->size--;
     }
 }
 

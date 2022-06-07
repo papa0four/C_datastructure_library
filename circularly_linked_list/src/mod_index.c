@@ -20,6 +20,12 @@ void decrement_index (cll_t * cll, size_t start_pos)
 
         current = current->next;
     }
+
+    if (cll->head == current->next)
+    {
+        current->index--;
+    }
+
 }
 
 void increment_index (cll_t * cll, node_t * start_node)

@@ -250,9 +250,54 @@ void test_verbose_by_index (char * fname, cll_t * cll, node_t * found, size_t in
 
         fprintf(stdout, "Node found!\n\n");
         found->pnode_func(found);
-        fprintf(stdout, "Node found validation:\n");
+        fprintf(stdout, "\n");
+        fprintf(stdout, "Node found validation:\n\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
         prev->pnode_func(prev);
         prev->pnode_func(prev->next);
+        found->pnode_func(found->next);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_by_data (char * fname, cll_t * cll, node_t * found, void * data)
+{
+    param_check(__FILE__, __LINE__, ARG_3, fname, cll, data);
+
+    if ((5 == cll->size)
+        && (NULL == found))
+    {
+        fprintf(stdout, "TEST 10 : %s - ", fname);
+        fprintf(stdout, "Testing Find Node by Data\n\n");
+        fprintf(stdout, "Searching for node %d:\n", *(int *)data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if ((5 == cll->size)
+            && (NULL != found))
+    {
+        node_t * prev = find_by_index(cll, found->index - 1);
+        if (NULL == prev)
+        {
+            fprintf(stderr, "Internal Structure Error, exiting...\n");
+            exit(1);
+        }
+
+        fprintf(stdout, "Node found!\n\n");
+        found->pnode_func(found);
+        fprintf(stdout, "\n");
+        fprintf(stdout, "Node found validation:\n\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+        prev->pnode_func(prev);
+        prev->pnode_func(prev->next);
+        found->pnode_func(found->next);
         fprintf(stdout, "\n");
     }
     else
@@ -267,16 +312,16 @@ void test_verbose_delete_node (char * fname, cll_t * cll, node_t * node, int * d
     param_check(__FILE__, __LINE__, ARG_2, cll, data);
 
     if ((5 == cll->size)
-        && (NULL == node))
+        && (NULL != node))
     {
-        fprintf(stdout, "TEST 10 : %s - ", fname);
+        fprintf(stdout, "TEST 11 : %s - ", fname);
         fprintf(stdout, "Testing Delete Node From List\n\n");
         fprintf(stdout, "Deleting node %d from list:\n", *(int *)data);
         cll->print_func(cll);
         fprintf(stdout, "\n");
     }
     else if ((4 == cll->size)
-            && (NULL != node))
+            && (NULL == node))
     {
         fprintf(stdout, "Node successfully removed from list\n\n");
         cll->print_func(cll);
@@ -284,6 +329,7 @@ void test_verbose_delete_node (char * fname, cll_t * cll, node_t * node, int * d
     }
     else
     {
+        fprintf(stderr, "\n\nsize: %ld\tnode: %p\n\n", cll->size, (void *)node);
         fprintf(stderr, "Testing Error Occurred, exiting...\n");
         exit(1);
     }

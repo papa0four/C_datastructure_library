@@ -256,12 +256,42 @@ node_t * find_node (cll_t * cll, const void * data);
 size_t get_list_size (cll_t * cll);
 
 /**
+ * @brief - the intent of this function is to remove the head of the list based upon user specified data. This
+ *          function will determine if the data presented matches the data stored within the list's head node
+ *          and remove it, free'ing it from memory before restoring the integrity of the list appropriately.
+ * @param cll - (cll_t *) a pointer to the current linked list storage container
+ * @param data - (void *) a generic pointer to the data to be compared and found stored within a linked list node
+ * @return - ON SUCCESS: the node containing the desired data to be removed will not longer be stored within
+ *           the container, free'ing the heap allocated space in memory and setting it to NULL. Additionally,
+ *           the list links will be rearranged to point to the appropriate next node. If the desired node to
+ *           remove from the linked list container does not current exist, an error message will be displayed
+ *           to the user via STDERR and no node will be removed from the list. If any combination of the parameters
+ *           passed to remove_node are NULL, errno will be set to EINVAL, an appropriate error message will be
+ *           displayed to the user via STDERR, and no node will be removed from the linked list container.
+ */
+void remove_head (cll_t * cll);
+
+/**
+ * @brief - the intent of this function is to remove the tail of the list based upon user specified data. This
+ *          function will determine if the data presented matches the data stored within the list's head node
+ *          and remove it, free'ing it from memory before restoring the integrity of the list appropriately.
+ * @param cll - (cll_t *) a pointer to the current linked list storage container
+ * @return - ON SUCCESS: the node containing the desired data to be removed will not longer be stored within
+ *           the container, free'ing the heap allocated space in memory and setting it to NULL. Additionally,
+ *           the list links will be rearranged to point to the appropriate next node. If the desired node to
+ *           remove from the linked list container does not current exist, an error message will be displayed
+ *           to the user via STDERR and no node will be removed from the list. If any combination of the parameters
+ *           passed to remove_node are NULL, errno will be set to EINVAL, an appropriate error message will be
+ *           displayed to the user via STDERR, and no node will be removed from the linked list container.
+ */
+void remove_tail (cll_t * cll);
+
+/**
  * @brief - the intent of this function is to remove a single node from the list based upon user specified data. This
  *          function iterates over the current list looking for the node that contains the matching data to that
  *          passed by the user before removing the node, free'ing it from memory and reconnecting the list links
  *          appropriately.
  * @param cll - (cll_t *) a pointer to the current linked list storage container
- * @param data - (void *) a generic point to the data to be compared and found stored within a linked list node
  * @return - ON SUCCESS: the node containing the desired data to be removed will not longer be stored within
  *           the container, free'ing the heap allocated space in memory and setting it to NULL. Additionally,
  *           the list links will be rearranged to point to the appropriate next node. If the desired node to

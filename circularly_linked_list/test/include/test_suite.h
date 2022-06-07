@@ -49,6 +49,8 @@ void test_insert_after_at_tail (pf_t * pass_fail);
 
 void test_find_by_index (pf_t * pass_fail);
 
+void test_find_by_data (pf_t * pass_fail);
+
 void test_delete_node (pf_t * pass_fail);
 
 #endif
