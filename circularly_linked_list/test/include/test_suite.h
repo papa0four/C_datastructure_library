@@ -53,4 +53,8 @@ void test_find_by_data (pf_t * pass_fail);
 
 void test_delete_node (pf_t * pass_fail);
 
+void test_delete_head (pf_t * pass_fail);
+
+void test_delete_tail (pf_t * pass_fail);
+
 #endif

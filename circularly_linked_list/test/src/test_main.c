@@ -82,6 +82,8 @@ int main (void)
     test_find_by_index(pass_fail);
     test_find_by_data(pass_fail);
     test_delete_node(pass_fail);
+    test_delete_head(pass_fail);
+    test_delete_tail(pass_fail);
 
     /* update total tests ran */
     pass_fail->total = pass_fail->tests_ran;  

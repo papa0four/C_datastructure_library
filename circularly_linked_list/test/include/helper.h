@@ -44,4 +44,8 @@ void test_verbose_by_data (char * fname, cll_t * cll, node_t * found, void * dat
 
 void test_verbose_delete_node (char * fname, cll_t * cll, node_t * node, int * data);
 
+void test_verbose_delete_head (char * fname, cll_t * cll);
+
+void test_verbose_delete_tail (char * fname, cll_t * cll);
+
 #endif

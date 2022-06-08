@@ -329,7 +329,56 @@ void test_verbose_delete_node (char * fname, cll_t * cll, node_t * node, int * d
     }
     else
     {
-        fprintf(stderr, "\n\nsize: %ld\tnode: %p\n\n", cll->size, (void *)node);
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_delete_head (char * fname, cll_t * cll)
+{
+    param_check(__FILE__, __LINE__, ARG_1, cll);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 12 : %s - ", fname);
+        fprintf(stdout, "Testing Delete Head Node From List\n\n");
+        fprintf(stdout, "Deleting head node %d from list:\n", *(int *)cll->head->data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (4 == cll->size)
+    {
+        fprintf(stdout, "Head node successfully removed from list\n\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
+        fprintf(stderr, "Testing Error Occurred, exiting...\n");
+        exit(1);
+    }
+}
+
+void test_verbose_delete_tail (char * fname, cll_t * cll)
+{
+    param_check(__FILE__, __LINE__, ARG_1, cll);
+
+    if (5 == cll->size)
+    {
+        fprintf(stdout, "TEST 13 : %s - ", fname);
+        fprintf(stdout, "Testing Delete Tail Node From List\n\n");
+        fprintf(stdout, "Deleting tail node %d from list:\n", *(int *)cll->tail->data);
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else if (4 == cll->size)
+    {
+        fprintf(stdout, "Tail node successfully removed from list\n\n");
+        cll->print_func(cll);
+        fprintf(stdout, "\n");
+    }
+    else
+    {
         fprintf(stderr, "Testing Error Occurred, exiting...\n");
         exit(1);
     }
