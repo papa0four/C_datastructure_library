@@ -436,6 +436,7 @@ void remove_head (cll_t * cll)
     if ((1 == cll->size)
         || (prev->next == prev))
     {
+        cll->delete_func(cll->head->data);
         cll->delete_func(cll->head);
         cll->head = NULL;
         cll->tail = NULL;
