@@ -1,1 +1,1 @@
-# C_datastructure_library
+# A repository storing pre-built data structures in C
