@@ -1,1 +1,1 @@
-# A repository storing pre-built data structures in C
+# A repository storing pre-built, functional data structures in C
