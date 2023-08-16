@@ -1,3 +1,5 @@
+# A repository storing pre-built, functional data structures in C
+=======
 # C_datastructure_library
 
 ## Contributors
@@ -6,3 +8,4 @@ James Horne <br/>
 Ben Gooch <br/>
 Jeremy Jackson <br/>
 Zach Fennel <br/>
+
